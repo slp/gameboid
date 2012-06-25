@@ -1,0 +1,11 @@
+<resources>
+	<style name="select_start_button">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:gravity">center_horizontal</item>
+		<item name="android:padding">10px</item>
+		<item name="android:singleLine">true</item>
+		<item name="android:textStyle">bold</item>
+		<item name="android:drawableBottom">@drawable/select_start</item>
+	</style>
+</resources>

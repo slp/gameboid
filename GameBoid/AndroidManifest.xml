@@ -1,0 +1,23 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+		package="com.androidemu.gba"
+		android:versionCode="6"
+		android:versionName="1.3.2">
+
+	<uses-sdk android:minSdkVersion="1" />
+
+	<application android:label="@string/app_label"
+			android:icon="@drawable/app_icon">
+
+		<activity android:name="GameBoid">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name="FileChooser" />
+		<activity android:name="GamePreferences" />
+
+	</application>
+</manifest>

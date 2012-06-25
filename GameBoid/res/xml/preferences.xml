@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:androidemu="http://androidemu.com/apk/res/android">
+
+	<PreferenceCategory android:title="@string/audio_settings">
+		<CheckBoxPreference android:key="soundEnabled"
+				android:title="@string/enable_sound"
+				android:defaultValue="true"/>
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/video_settings">
+		<ListPreference android:key="scalingMode"
+				android:title="@string/scaling_mode"
+				android:entries="@array/scaling_mode_entries"
+				android:entryValues="@array/scaling_mode_entryvalues"
+				android:defaultValue="stretch"/>
+
+		<CheckBoxPreference android:key="autoFrameSkip"
+				android:title="@string/auto_frame_skip"
+				android:defaultValue="true"/>
+
+		<com.androidemu.gba.SeekBarPreference
+				android:key="maxFrameSkips"
+				android:title="@string/max_frame_skips"
+				android:summary="@string/max_frame_skips_summary"
+				androidemu:maxValue="10"
+				android:defaultValue="2"/>
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/input_settings">
+		<PreferenceScreen android:key="keySettings"
+				android:title="@string/key_settings"
+				android:summary="@string/key_settings_summary">
+			<PreferenceCategory android:key="gameKeyBindings"
+					android:title="@string/game_key_bindings"/>
+
+			<PreferenceCategory android:title="@string/shortcut_keys">
+				<com.androidemu.gba.GameKeyPreference
+						android:key="quickLoad"
+						android:title="@string/quick_load"
+						android:defaultValue="0"/>
+				<com.androidemu.gba.GameKeyPreference
+						android:key="quickSave"
+						android:title="@string/quick_save"
+						android:defaultValue="0"/>
+			</PreferenceCategory>
+		</PreferenceScreen>
+
+		<CheckBoxPreference android:key="enableVirtualKeypad"
+				android:title="@string/enable_virtual_keypad"
+				android:summary="@string/enable_virtual_keypad_summary"/>
+
+		<CheckBoxPreference android:key="enableTrackball"
+				android:title="@string/enable_trackball"
+				android:summary="@string/enable_trackball_summary"/>
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/about">
+		<PreferenceScreen android:key="appAbout"
+				android:title="@string/app_about">
+		</PreferenceScreen>
+
+		<PreferenceScreen android:key="searchRoms"
+				android:title="@string/search_roms">
+		</PreferenceScreen>
+	</PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+	<!-- The name of the application. -->
+	<string name="app_label">GameBoid</string>
+
+	<!-- File chooser -->
+	<string name="title_select_bios">Select BIOS</string>
+	<string name="bios_not_found">You must specify a GBA BIOS file before you can play games. It is normally named <b>&lt;gba_bios.bin&gt;</b>. You may download it from the internet.</string>
+	<string name="load_bios_title">BIOS</string>
+	<string name="load_bios_failed">Load BIOS failed. You must have the GBA BIOS file before you can play games.</string>
+	<string name="browse_bios">Browse</string>
+
+	<string name="title_select_rom">Select ROM</string>
+	<string name="no_files_in_folder">No files in this folder.</string>
+	<string name="invalid_dir">Invalid directory</string>
+
+	<string name="no_rom">No ROM loaded.\nPress <b>Menu</b> for more options.</string>
+	<string name="load_rom_failed">Load ROM failed. Please try another file.</string>
+	<string name="quit_game_title">Quit Options</string>
+	<string name="load_state_title">Load State</string>
+	<string name="save_state_title">Save State</string>
+
+	<!-- Menu -->
+	<string name="open">Open</string>
+	<string name="settings">Settings</string>
+	<string name="reset">Reset</string>
+	<string name="save_state">Save</string>
+	<string name="load_state">Load</string>
+	<string name="close">Close</string>
+	<string name="quit">Quit</string>
+
+	<!-- Settings -->
+	<string name="settings_title">Settings</string>
+	<string name="audio_settings">Audio settings</string>
+	<string name="enable_sound">Enable sound</string>
+	<string name="video_settings">Video settings</string>
+	<string name="scaling_mode">Scaling mode</string>
+	<string name="auto_frame_skip">Automatic frame skip</string>
+	<string name="max_frame_skips">Max frame skips</string>
+	<string name="max_frame_skips_summary">Maximum number of consecutive frame skips</string>
+	<string name="input_settings">Input settings</string>
+	<string name="key_settings">Key settings</string>
+	<string name="key_settings_summary">Key bindings and shortcut keys</string>
+	<string name="game_key_bindings">Game key bindings</string>
+	<string name="shortcut_keys">Shortcut keys</string>
+	<string name="quick_load">Quick load</string>
+	<string name="quick_save">Quick save</string>
+	<string name="enable_virtual_keypad">Virtual keypad</string>
+	<string name="enable_virtual_keypad_summary">Enable touchable on-screen keypad</string>
+	<string name="enable_trackball">Trackball</string>
+	<string name="enable_trackball_summary">Use the trackball as Dpad</string>
+	<string name="about">About</string>
+	<string name="app_about">GameBoid on Market</string>
+	<string name="search_roms">Search ROMs</string>
+	<string name="search_roms_keyword">GBA ROMs download</string>
+
+	<string name="press_key_prompt">Press a key on the keyboard...</string>
+	<string name="key_none">&lt;none&gt;</string>
+	<string name="key_unknown">&lt;unknown&gt;</string>
+	<string name="key_clear">Clear</string>
+
+	<string name="gamepad_up">Up</string>
+	<string name="gamepad_down">Down</string>
+	<string name="gamepad_left">Left</string>
+	<string name="gamepad_right">Right</string>
+	<string name="gamepad_up_left">Up+Left</string>
+	<string name="gamepad_up_right">Up+Right</string>
+	<string name="gamepad_down_left">Down+Left</string>
+	<string name="gamepad_down_right">Down+Right</string>
+	<string name="gamepad_select">Select</string>
+	<string name="gamepad_start">Start</string>
+	<string name="gamepad_A">Button A</string>
+	<string name="gamepad_B">Button B</string>
+	<string name="gamepad_A_turbo">Button A (turbo)</string>
+	<string name="gamepad_B_turbo">Button B (turbo)</string>
+	<string name="gamepad_TL">Trigger Left</string>
+	<string name="gamepad_TR">Trigger Right</string>
+
+</resources>

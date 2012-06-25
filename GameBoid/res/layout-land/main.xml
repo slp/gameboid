@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+
+	<RelativeLayout android:id="@+id/game"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+
+		<com.androidemu.gba.input.VirtualKeypad
+				android:id="@+id/keypad"
+				android:layout_width="wrap_content"
+				android:layout_height="fill_parent">
+
+			<TextView style="@style/select_start_button"
+					android:id="@+id/select"
+					android:layout_marginLeft="30px"
+					android:text="@string/gamepad_select"/>
+
+			<TextView style="@style/select_start_button"
+					android:id="@+id/start"
+					android:layout_below="@id/select"
+					android:layout_alignLeft="@id/select"
+					android:text="@string/gamepad_start"/>
+
+			<ImageView android:id="@+id/dpad"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentBottom="true"
+					android:src="@drawable/keypad"/>
+
+		</com.androidemu.gba.input.VirtualKeypad>
+
+		<FrameLayout
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:layout_alignParentRight="true"
+				android:layout_toRightOf="@id/keypad">
+			<com.androidemu.EmulatorView
+					android:id="@+id/emulator"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent"
+					android:layout_gravity="center"/>
+		</FrameLayout>
+	</RelativeLayout>
+
+	<TextView android:id="@+id/empty"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:text="@string/no_rom"
+			android:textSize="20sp"
+			android:gravity="center"/>
+
+</FrameLayout>

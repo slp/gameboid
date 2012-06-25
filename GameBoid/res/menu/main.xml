@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/menu_open"
+			android:title="@string/open"
+			android:icon="@drawable/ic_menu_open"
+			android:alphabeticShortcut="o" />
+
+	<group android:id="@+id/GAME_MENU">
+		<item android:id="@+id/menu_load_state"
+				android:title="@string/load_state"
+				android:icon="@android:drawable/ic_menu_set_as"
+				android:alphabeticShortcut="l" />
+		<item android:id="@+id/menu_save_state"
+				android:title="@string/save_state"
+				android:icon="@android:drawable/ic_menu_save"
+				android:alphabeticShortcut="t" />
+	</group>
+
+	<item android:id="@+id/menu_settings"
+			android:title="@string/settings"
+			android:icon="@android:drawable/ic_menu_preferences" />
+
+	<group android:id="@+id/GAME_MENU">
+		<item android:id="@+id/menu_reset"
+				android:title="@string/reset"
+				android:icon="@android:drawable/ic_menu_revert" />
+		<item android:id="@+id/menu_close"
+				android:title="@string/close" />
+		<item android:id="@+id/menu_quit"
+				android:title="@string/quit"
+				android:icon="@android:drawable/ic_menu_close_clear_cancel" />
+	</group>
+
+</menu>
