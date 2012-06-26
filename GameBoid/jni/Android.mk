@@ -43,7 +43,7 @@ LOCAL_C_INCLUDES += \
         $(LOCAL_PATH)/../../common \
 	external/zlib
 
-LOCAL_LDLIBS := -lz -ldl -llog
+LOCAL_LDLIBS := -lz -llog
 
 # Compiler flags.
 LOCAL_CFLAGS += -O3 -fvisibility=hidden

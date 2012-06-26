@@ -51,7 +51,7 @@ static AudioPlayer *loadAudioPlayer(const char *libdir)
 	};
 
 	void *handle = NULL;
-	for (int i = 0; i < NELEM(so_names); i++) {
+	/*for (int i = 0; i < NELEM(so_names); i++) {
 		char path[1024];
 		snprintf(path, sizeof(path), "%s/lib%s.so", libdir, so_names[i]);
 		handle = dlopen(path, RTLD_NOW);
@@ -59,7 +59,7 @@ static AudioPlayer *loadAudioPlayer(const char *libdir)
 			break;
 
 		LOGD("Cannot load %s: %s", path, dlerror());
-	}
+	}*/
 	if (handle == NULL)
 		return NULL;
 
