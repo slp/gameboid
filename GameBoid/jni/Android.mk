@@ -28,20 +28,22 @@ LOCAL_SRC_FILES += \
 
 # All of the shared libraries we link against.
 LOCAL_SHARED_LIBRARIES := \
-	libdl \
-	libnativehelper \
-	libutils \
-	libz
+	libnativehelper
+#	libutils \
+#	libz
 
 # Static libraries.
-LOCAL_STATIC_LIBRARIES := \
-	libunz
+#LOCAL_STATIC_LIBRARIES := \
+#	libunz
 
 # Also need the JNI headers.
 LOCAL_C_INCLUDES += \
 	$(JNI_H_INCLUDE) \
 	$(LOCAL_PATH) \
+        $(LOCAL_PATH)/../../common \
 	external/zlib
+
+LOCAL_LDLIBS := -lz -ldl -llog
 
 # Compiler flags.
 LOCAL_CFLAGS += -O3 -fvisibility=hidden

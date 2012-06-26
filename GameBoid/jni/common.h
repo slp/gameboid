@@ -143,7 +143,7 @@ typedef u32 fixed16_16;
 #include <string.h>
 #include <stdarg.h>
 #include "cpu.h"
-#include "memory.h"
+#include "_memory.h"
 #include "video.h"
 #include "input.h"
 #include "sound.h"

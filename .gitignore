@@ -1,0 +1,7 @@
+gen
+bin/*
+/gen
+/obj
+libs/armeabi/*.so
+.DS_Store
+*~

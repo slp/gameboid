@@ -206,7 +206,9 @@ Emulator_initialize(JNIEnv *env, jobject self,
 	strcpy((char *) main_path, datadir);
 	env->ReleaseStringUTFChars(jdatadir, datadir);
 
-	LOGW_IF(audioPlayer == NULL, "Cannot initialize sound module");
+	if (audioPlayer == NULL) {
+                LOGW("Cannot initialize sound module");
+        }
 	if (audioPlayer != NULL)
 		audioPlayer->init(44100, 16, 2);
 
