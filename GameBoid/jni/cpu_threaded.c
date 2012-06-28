@@ -34,13 +34,14 @@ invalidate_cache_region(unsigned char *begin, unsigned char *end)
 	asm volatile ("svc 0x0" :: "r" (r0), "r" (r1), "r" (r2), "r" (r7));
 }
 
+__asm__(".section .jit,\"awx\",%progbits");
 
 u8 rom_translation_cache[ROM_TRANSLATION_CACHE_SIZE]
-		__attribute__ ((aligned(4)));
+		__attribute__ ((aligned(4),section(".jit")));
 u8 *rom_translation_ptr = rom_translation_cache;
 
 u8 ram_translation_cache[RAM_TRANSLATION_CACHE_SIZE]
-		__attribute__ ((aligned(4)));
+		__attribute__ ((aligned(4),section(".jit")));
 u8 *ram_translation_ptr = ram_translation_cache;
 u32 iwram_code_min = 0xFFFFFFFF;
 u32 iwram_code_max = 0xFFFFFFFF;
@@ -48,7 +49,7 @@ u32 ewram_code_min = 0xFFFFFFFF;
 u32 ewram_code_max = 0xFFFFFFFF;
 
 u8 bios_translation_cache[BIOS_TRANSLATION_CACHE_SIZE]
-		__attribute__ ((aligned(4)));
+		__attribute__ ((aligned(4),section(".jit")));
 u8 *bios_translation_ptr = bios_translation_cache;
 
 u32 *rom_branch_hash[ROM_BRANCH_HASH_SIZE];
