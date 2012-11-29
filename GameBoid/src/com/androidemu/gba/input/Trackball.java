@@ -1,8 +1,8 @@
 package com.androidemu.gba.input;
 
 import android.view.KeyEvent;
+
 import android.view.View;
-import com.androidemu.Emulator;
 
 public class Trackball implements View.OnKeyListener {
 
@@ -41,16 +41,16 @@ public class Trackball implements View.OnKeyListener {
 
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_UP:
-			states = Emulator.GAMEPAD_UP;
+			states = Keycodes.GAMEPAD_UP;
 			break;
 		case KeyEvent.KEYCODE_DPAD_DOWN:
-			states = Emulator.GAMEPAD_DOWN;
+			states = Keycodes.GAMEPAD_DOWN;
 			break;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
-			states = Emulator.GAMEPAD_LEFT;
+			states = Keycodes.GAMEPAD_LEFT;
 			break;
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			states = Emulator.GAMEPAD_RIGHT;
+			states = Keycodes.GAMEPAD_RIGHT;
 			break;
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 			states = 0;

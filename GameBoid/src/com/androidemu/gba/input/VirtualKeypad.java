@@ -1,19 +1,18 @@
 package com.androidemu.gba.input;
 
 import android.content.Context;
+
 import android.util.AttributeSet;
-import android.util.Log;
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.androidemu.Emulator;
 import com.androidemu.gba.R;
 
 public class VirtualKeypad extends RelativeLayout
 		implements View.OnTouchListener {
 
-	private static final String LOG_TAG = "VirtualKeypad";
 	private static final int DEAD_ZONE = 20;
 
 	private View dpadView;
@@ -60,13 +59,13 @@ public class VirtualKeypad extends RelativeLayout
 
 		int key = 0;
 		if (x < cx - DEAD_ZONE)
-			key |= Emulator.GAMEPAD_LEFT;
+			key |= Keycodes.GAMEPAD_LEFT;
 		else if (x > cx + DEAD_ZONE)
-			key |= Emulator.GAMEPAD_RIGHT;
+			key |= Keycodes.GAMEPAD_RIGHT;
 		if (y < cy - DEAD_ZONE)
-			key |= Emulator.GAMEPAD_UP;
+			key |= Keycodes.GAMEPAD_UP;
 		else if (y > cy + DEAD_ZONE)
-			key |= Emulator.GAMEPAD_DOWN;
+			key |= Keycodes.GAMEPAD_DOWN;
 
 		return key;
 	}
@@ -92,10 +91,10 @@ public class VirtualKeypad extends RelativeLayout
 		int gameKey;
 		switch (id) {
 		case R.id.select:
-			gameKey = Emulator.GAMEPAD_SELECT;
+			gameKey = Keycodes.GAMEPAD_SELECT;
 			break;
 		case R.id.start:
-			gameKey = Emulator.GAMEPAD_START;
+			gameKey = Keycodes.GAMEPAD_START;
 			break;
 		default:
 			return false;

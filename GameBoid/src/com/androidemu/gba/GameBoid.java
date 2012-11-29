@@ -5,23 +5,24 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
 import android.widget.Toast;
 
 import com.androidemu.Emulator;
 import com.androidemu.EmulatorView;
+
 import com.androidemu.gba.input.GameKeyListener;
 import com.androidemu.gba.input.Keyboard;
+import com.androidemu.gba.input.Keycodes;
 import com.androidemu.gba.input.VirtualKeypad;
 import com.androidemu.gba.input.Trackball;
 
@@ -45,9 +46,9 @@ public class GameBoid extends Activity implements GameKeyListener,
 	private static final int DIALOG_SAVE_STATE = 3;
 
 	private static final int GAMEPAD_LEFT_RIGHT =
-			(Emulator.GAMEPAD_LEFT | Emulator.GAMEPAD_RIGHT);
+			(Keycodes.GAMEPAD_LEFT | Keycodes.GAMEPAD_RIGHT);
 	private static final int GAMEPAD_UP_DOWN =
-			(Emulator.GAMEPAD_UP | Emulator.GAMEPAD_DOWN);
+			(Keycodes.GAMEPAD_UP | Keycodes.GAMEPAD_DOWN);
 	private static final int GAMEPAD_DIRECTION =
 			(GAMEPAD_UP_DOWN | GAMEPAD_LEFT_RIGHT);
 

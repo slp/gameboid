@@ -13,9 +13,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
-import com.androidemu.Emulator;
+import com.androidemu.gba.input.Keycodes;
 
 public class GamePreferences extends PreferenceActivity
 		implements Preference.OnPreferenceChangeListener {
@@ -24,22 +23,22 @@ public class GamePreferences extends PreferenceActivity
 		"http://market.android.com/search?q=pname:";
 
 	public static final int[] gameKeys = {
-		Emulator.GAMEPAD_UP,
-		Emulator.GAMEPAD_DOWN,
-		Emulator.GAMEPAD_LEFT,
-		Emulator.GAMEPAD_RIGHT,
-		Emulator.GAMEPAD_UP_LEFT,
-		Emulator.GAMEPAD_UP_RIGHT,
-		Emulator.GAMEPAD_DOWN_LEFT,
-		Emulator.GAMEPAD_DOWN_RIGHT,
-		Emulator.GAMEPAD_SELECT,
-		Emulator.GAMEPAD_START,
-		Emulator.GAMEPAD_A,
-		Emulator.GAMEPAD_B,
-		Emulator.GAMEPAD_A_TURBO,
-		Emulator.GAMEPAD_B_TURBO,
-		Emulator.GAMEPAD_TL,
-		Emulator.GAMEPAD_TR,
+		Keycodes.GAMEPAD_UP,
+		Keycodes.GAMEPAD_DOWN,
+		Keycodes.GAMEPAD_LEFT,
+		Keycodes.GAMEPAD_RIGHT,
+		Keycodes.GAMEPAD_UP_LEFT,
+		Keycodes.GAMEPAD_UP_RIGHT,
+		Keycodes.GAMEPAD_DOWN_LEFT,
+		Keycodes.GAMEPAD_DOWN_RIGHT,
+		Keycodes.GAMEPAD_SELECT,
+		Keycodes.GAMEPAD_START,
+		Keycodes.GAMEPAD_A,
+		Keycodes.GAMEPAD_B,
+		Keycodes.GAMEPAD_A_TURBO,
+		Keycodes.GAMEPAD_B_TURBO,
+		Keycodes.GAMEPAD_TL,
+		Keycodes.GAMEPAD_TR,
 	};
 
 	public static final String[] keyPrefKeys = {
