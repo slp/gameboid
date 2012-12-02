@@ -421,3 +421,8 @@ int register_Emulator(JNIEnv *env)
 	return jniRegisterNativeMethods(env, "com/androidemu/Emulator",
 			methods, NELEM(methods));
 }
+
+int register_Cheats(JNIEnv *env)
+{
+	return 0;
+}

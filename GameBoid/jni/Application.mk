@@ -1,5 +1,9 @@
 APP_BUILD_SCRIPT = $(APP_PROJECT_PATH)/Android.mk
 
-APP_ABI := armeabi armeabi-v7a
+APP_ABI := armeabi
 
-JNI_H_INCLUDE = $(APP_PROJECT_PATH)/../common/libnativehelper/include/
+ifeq ($(APP_OPTIM),release)
+APP_ABI += armeabi-v7a
+endif
+
+EMU_LIBRARY_PATH = $(APP_PROJECT_PATH)/../../emudroid-common/

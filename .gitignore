@@ -2,6 +2,7 @@ gen
 bin/*
 /gen
 /obj
+obj
 bin
 project.properties
 libs/armeabi/*.so

@@ -23,25 +23,17 @@ LOCAL_SRC_FILES := \
 	gp2x/video_blend.S
 
 LOCAL_SRC_FILES += \
-	android/entry.cpp \
-	android/emulator.cpp
+	android/emulator.cpp \
+	android/main.cpp
 
 # All of the shared libraries we link against.
 LOCAL_SHARED_LIBRARIES := \
 	libnativehelper
-#	libutils \
-#	libz
 
-# Static libraries.
-#LOCAL_STATIC_LIBRARIES := \
-#	libunz
-
-# Also need the JNI headers.
 LOCAL_C_INCLUDES += \
-	$(JNI_H_INCLUDE) \
-	$(LOCAL_PATH) \
-        $(LOCAL_PATH)/../../common \
-	external/zlib
+	$(EMU_LIBRARY_PATH)/jni/libnativehelper/include/ \
+	$(EMU_LIBRARY_PATH)/jni/ \
+	$(LOCAL_PATH)
 
 LOCAL_LDLIBS := -lz -llog
 

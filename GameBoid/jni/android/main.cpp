@@ -16,6 +16,7 @@
 static int registerNatives(JNIEnv* env)
 {
 	REGISTER_NATIVE(env, Emulator);
+	REGISTER_NATIVE(env, Cheats);
 
 	return JNI_TRUE;
 }
