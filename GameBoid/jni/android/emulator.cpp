@@ -6,7 +6,7 @@
 #include <utils/Log.h>
 #include <nativehelper/JNIHelp.h>
 #include <nativehelper/jni.h>
-#include "audioplayer.h"
+#include "emumedia.h"
 extern "C" {
 #include "common.h"
 #include "main.h"
@@ -35,42 +35,13 @@ static bool resumeRequested;
 static unsigned int keyStates;
 static bool initialized;
 static bool romLoaded;
-static AudioPlayer *audioPlayer;
+static EmuMedia *media;
 
 static JNIEnv *jEnv;
 static jobject renderSurface;
 static int surfaceWidth, surfaceHeight;
 static jintArray jImage;
 static jmethodID jSendImageMethod;
-
-static AudioPlayer *loadAudioPlayer(const char *libdir)
-{
-	static const char *const so_names[] = {
-		"emusound",
-		"emusound2",
-	};
-
-	void *handle = NULL;
-	/*for (int i = 0; i < NELEM(so_names); i++) {
-		char path[1024];
-		snprintf(path, sizeof(path), "%s/lib%s.so", libdir, so_names[i]);
-		handle = dlopen(path, RTLD_NOW);
-		if (handle != NULL)
-			break;
-
-		LOGD("Cannot load %s: %s", path, dlerror());
-	}*/
-	if (handle == NULL)
-		return NULL;
-
-	AudioPlayer *(*createPlayer)() = (AudioPlayer *(*)())
-			dlsym(handle, "createPlayer");
-	if (createPlayer == NULL) {
-		dlclose(handle);
-		return NULL;
-	}
-	return createPlayer();
-}
 
 static void pauseEmulator()
 {
@@ -82,8 +53,8 @@ static void pauseEmulator()
 	}
 	pthread_mutex_unlock(&emuStateMutex);
 
-	if (global_enable_audio && audioPlayer != NULL)
-		audioPlayer->pause();
+	if (global_enable_audio && media != NULL)
+		media->audioPause(jEnv);
 }
 
 static void resumeEmulator(int restart = 0)
@@ -111,8 +82,8 @@ static void unloadROM()
 
 	pauseEmulator();
 
-	if (audioPlayer != NULL)
-		audioPlayer->stop();
+	if (media != NULL)
+		media->audioStop(jEnv);
 
 	romLoaded = false;
 }
@@ -130,8 +101,8 @@ static int waitForStart()
 	}
 	pthread_mutex_unlock(&emuStateMutex);
 
-	if (global_enable_audio && audioPlayer != NULL)
-		audioPlayer->start();
+	if (global_enable_audio && media != NULL)
+		media->audioStart(jEnv);
 
 	int rv = resumeRestart;
 	resumeRestart = 0;
@@ -188,29 +159,29 @@ extern "C" void flip_screen()
 
 extern "C" void render_audio(s16 *data, u32 size)
 {
-	if (audioPlayer != NULL)
-		audioPlayer->play(data, size * 2);
+	if (media != NULL)
+		media->audioPlay(jEnv, data, size * 2);
 }
+
+extern EmuMedia* createEmuMedia();
 
 static jboolean
 Emulator_initialize(JNIEnv *env, jobject self,
 		jstring jlibdir, jstring jdatadir)
 {
-	resumeRequested = false;
+	media = createEmuMedia();
+	if (!media->init(env))
+			return JNI_FALSE;
 
-	const char *libdir = env->GetStringUTFChars(jlibdir, NULL);
-	audioPlayer = loadAudioPlayer(libdir);
-	env->ReleaseStringUTFChars(jlibdir, libdir);
+	resumeRequested = false;
 
 	const char *datadir = env->GetStringUTFChars(jdatadir, NULL);
 	strcpy((char *) main_path, datadir);
 	env->ReleaseStringUTFChars(jdatadir, datadir);
 
-	if (audioPlayer == NULL) {
+	if (media == NULL) {
                 LOGW("Cannot initialize sound module");
         }
-	if (audioPlayer != NULL)
-		audioPlayer->init(44100, 16, 2);
 
 	if (initialized)
 		return JNI_TRUE;
@@ -225,9 +196,9 @@ static void Emulator_cleanUp(JNIEnv *env, jobject self)
 {
 	unloadROM();
 
-	if (audioPlayer != NULL) {
-		audioPlayer->destroy();
-		audioPlayer = NULL;
+	if (media != NULL) {
+		media->destroy(env);
+		media = NULL;
 	}
 }
 
@@ -334,6 +305,9 @@ static jboolean Emulator_loadROM(JNIEnv *env, jobject self, jstring jfile)
 	reg[CHANGED_PC_STATUS] = 1;
 	romLoaded = true;
 
+	if (media != NULL)
+		media->audioCreate(env, 44100, 16, 2);
+
 	resumeEmulator(1);
 	rv = JNI_TRUE;
 error:
@@ -391,6 +365,8 @@ static void Emulator_run(JNIEnv *env, jobject self)
 
 	waitForStart();
 	execute_arm_translate(execute_cycles);
+
+	jEnv = NULL;
 }
 
 int register_Emulator(JNIEnv *env)

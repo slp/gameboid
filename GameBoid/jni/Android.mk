@@ -23,6 +23,7 @@ LOCAL_SRC_FILES := \
 	gp2x/video_blend.S
 
 LOCAL_SRC_FILES += \
+	android/emumedia.cpp \
 	android/emulator.cpp \
 	android/main.cpp
 
