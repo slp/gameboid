@@ -9,8 +9,6 @@ LOCAL_PACKAGE_NAME := GameBoid
 
 LOCAL_JNI_SHARED_LIBRARIES := \
 	libgba
-#	libemusound2
-#	libemusound2
 
 include $(BUILD_PACKAGE)
 
@@ -20,4 +18,3 @@ MY_DIR := $(LOCAL_PATH)
 # Also build all of the sub-targets under this one: the shared library.
 include $(call all-makefiles-under,$(LOCAL_PATH))
 include $(APP_PROJECT_PATH)/../../emudroid-common/jni/libnativehelper/Android.mk
-#include $(EMU_LIBRARY_PATH)/jni/Android.mk

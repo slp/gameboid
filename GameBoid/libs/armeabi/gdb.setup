@@ -1,2 +1,0 @@
-set solib-search-path ./obj/local/armeabi
-directory /opt/android-ndk/platforms/android-14/arch-arm/usr/include ./../../emudroid-common//jni/libnativehelper/include/ /opt/android-ndk/sources/cxx-stl/system/include ../../emudroid-common/jni/libnativehelper/include/nativehelper/ ../../emudroid-common/jni/libnativehelper/../
