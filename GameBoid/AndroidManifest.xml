@@ -3,12 +3,12 @@
 		android:versionCode="6"
 		android:versionName="1.3.2">
 
-	<uses-sdk android:minSdkVersion="1" />
+	<uses-sdk android:minSdkVersion="1" android:targetSdkVersion="10"/>
 
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-	<application android:label="@string/app_label"
-			android:icon="@drawable/app_icon" android:debuggable="true">
+	<application android:label="@string/app_label" android:hardwareAccelerated="true"
+			android:icon="@drawable/app_icon" android:allowBackup="true" android:debuggable="true">
 
 		<activity android:name="GameBoid">
 			<intent-filter>
