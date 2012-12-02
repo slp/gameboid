@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -82,16 +83,17 @@ public class GameBoid extends Activity implements GameKeyListener,
 		setContentView(R.layout.main);
 		emulatorView = (EmulatorView) findViewById(R.id.emulator);
 		emulatorView.setEmulator(emulator);
+		
 		switchToView(R.id.empty);
 
 		// create physical keyboard and trackball
 		keyboard = new Keyboard(emulatorView, this);
 		trackball = new Trackball(keyboard, this);
-
-		// create virtual keypad
-		keypad = (VirtualKeypad) findViewById(R.id.keypad);
+		
+		keypad = new VirtualKeypad(this);
 		keypad.setGameKeyListener(this);
-
+		addContentView(keypad, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+		
 		// copy preset files
 		copyAsset(new File(datadir, "game_config.txt"));
 
@@ -103,7 +105,7 @@ public class GameBoid extends Activity implements GameKeyListener,
 		// restore state if any
 		if (savedInstanceState != null)
 			currentGame = savedInstanceState.getString("currentGame");
-		switchToView(currentGame == null ? R.id.empty : R.id.game);
+		switchToView(currentGame == null ? R.id.empty : R.id.emulator);
 
 		// load BIOS
 		if (loadBIOS(settings.getString("bios", null)))
@@ -145,7 +147,7 @@ public class GameBoid extends Activity implements GameKeyListener,
 		super.onResume();
 		resumeEmulator();
 	}
-
+	
 	@Override
 	protected void onStop()
 	{
@@ -321,7 +323,7 @@ public class GameBoid extends Activity implements GameKeyListener,
 	{
 		int states = 0;
 		states |= keyboard.getKeyStates();
-		states |= keypad.getKeyStates();
+		if (keypad != null) states |= keypad.getKeyStates();
 
 		if ((states & GAMEPAD_DIRECTION) != 0)
 			trackball.reset();
@@ -369,7 +371,7 @@ public class GameBoid extends Activity implements GameKeyListener,
 		if (resumeRequested++ == 0)
 		{
 			keyboard.reset();
-			keypad.reset();
+			if (keypad != null) keypad.reset();
 			trackball.reset();
 			onGameKeyChanged();
 
@@ -445,7 +447,7 @@ public class GameBoid extends Activity implements GameKeyListener,
 		emulator.setOption("soundEnabled", settings.getBoolean("soundEnabled", true));
 
 		trackball.setEnabled(settings.getBoolean("enableTrackball", false));
-		keypad.setVisibility(settings.getBoolean("enableVirtualKeypad",
+		if (keypad != null) keypad.setVisibility(settings.getBoolean("enableVirtualKeypad",
 				GamePreferences.getDefaultVirtualKeypadEnabled(this)) ? View.VISIBLE
 				: View.GONE);
 
@@ -472,11 +474,19 @@ public class GameBoid extends Activity implements GameKeyListener,
 
 	private void switchToView(int id)
 	{
-		final int viewIds[] = { R.id.empty, R.id.game };
+		final int viewIds[] = { R.id.empty, R.id.emulator };
 		for (int i = 0; i < viewIds.length; i++)
 		{
-			findViewById(viewIds[i]).setVisibility(
-					viewIds[i] == id ? View.VISIBLE : View.INVISIBLE);
+			View v = findViewById(viewIds[i]);
+			if (viewIds[i] == id)
+			{
+				v.bringToFront();
+				v.setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				v.setVisibility(View.INVISIBLE);
+			}
 		}
 	}
 
@@ -601,7 +611,7 @@ public class GameBoid extends Activity implements GameKeyListener,
 			return false;
 		}
 		currentGame = fname;
-		switchToView(R.id.game);
+		switchToView(R.id.emulator);
 		return true;
 	}
 
