@@ -10,8 +10,8 @@ import android.widget.RelativeLayout;
 
 import com.androidemu.gba.R;
 
-public class VirtualKeypad extends RelativeLayout
-		implements View.OnTouchListener {
+public class VirtualKeypad extends RelativeLayout implements View.OnTouchListener
+{
 
 	private static final int DEAD_ZONE = 20;
 
@@ -19,24 +19,29 @@ public class VirtualKeypad extends RelativeLayout
 	private GameKeyListener gameKeyListener;
 	private int keyStates;
 
-	public VirtualKeypad(Context context, AttributeSet attrs) {
+	public VirtualKeypad(Context context, AttributeSet attrs)
+	{
 		super(context, attrs);
 	}
 
-	public void setGameKeyListener(GameKeyListener listener) {
+	public void setGameKeyListener(GameKeyListener listener)
+	{
 		gameKeyListener = listener;
 	}
 
-	public int getKeyStates() {
+	public int getKeyStates()
+	{
 		return keyStates;
 	}
 
-	public void reset() {
+	public void reset()
+	{
 		keyStates = 0;
 	}
 
 	@Override
-	protected void onFinishInflate() {
+	protected void onFinishInflate()
+	{
 		dpadView = findViewById(R.id.dpad);
 		dpadView.setOnTouchListener(this);
 
@@ -44,14 +49,17 @@ public class VirtualKeypad extends RelativeLayout
 		findViewById(R.id.start).setOnTouchListener(this);
 	}
 
-	private void setKeyStates(int newStates) {
-		if (keyStates != newStates) {
+	private void setKeyStates(int newStates)
+	{
+		if (keyStates != newStates)
+		{
 			keyStates = newStates;
 			gameKeyListener.onGameKeyChanged();
 		}
 	}
 
-	private int getGameKey(float fx, float fy) {
+	private int getGameKey(float fx, float fy)
+	{
 		final int x = (int) (fx + 0.5f);
 		final int y = (int) (fy + 0.5f);
 		final int cx = dpadView.getWidth() / 2;
@@ -60,66 +68,69 @@ public class VirtualKeypad extends RelativeLayout
 		int key = 0;
 		if (x < cx - DEAD_ZONE)
 			key |= Keycodes.GAMEPAD_LEFT;
-		else if (x > cx + DEAD_ZONE)
-			key |= Keycodes.GAMEPAD_RIGHT;
+		else if (x > cx + DEAD_ZONE) key |= Keycodes.GAMEPAD_RIGHT;
 		if (y < cy - DEAD_ZONE)
 			key |= Keycodes.GAMEPAD_UP;
-		else if (y > cy + DEAD_ZONE)
-			key |= Keycodes.GAMEPAD_DOWN;
+		else if (y > cy + DEAD_ZONE) key |= Keycodes.GAMEPAD_DOWN;
 
 		return key;
 	}
 
-	private boolean onDpadTouch(MotionEvent event) {
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-		case MotionEvent.ACTION_MOVE:
-			setKeyStates(getGameKey(event.getX(), event.getY()));
-			break;
-		case MotionEvent.ACTION_UP:
-		case MotionEvent.ACTION_OUTSIDE:
-		case MotionEvent.ACTION_CANCEL:
-			setKeyStates(0);
-			break;
-		default:
-			return false;
+	private boolean onDpadTouch(MotionEvent event)
+	{
+		switch (event.getAction())
+		{
+			case MotionEvent.ACTION_DOWN:
+			case MotionEvent.ACTION_MOVE:
+				setKeyStates(getGameKey(event.getX(), event.getY()));
+				break;
+			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_OUTSIDE:
+			case MotionEvent.ACTION_CANCEL:
+				setKeyStates(0);
+				break;
+			default:
+				return false;
 		}
 		return true;
 	}
 
-	private boolean onButtonTouch(int id, MotionEvent event) {
+	private boolean onButtonTouch(int id, MotionEvent event)
+	{
 		int gameKey;
-		switch (id) {
-		case R.id.select:
-			gameKey = Keycodes.GAMEPAD_SELECT;
-			break;
-		case R.id.start:
-			gameKey = Keycodes.GAMEPAD_START;
-			break;
-		default:
-			return false;
+		switch (id)
+		{
+			case R.id.select:
+				gameKey = Keycodes.GAMEPAD_SELECT;
+				break;
+			case R.id.start:
+				gameKey = Keycodes.GAMEPAD_START;
+				break;
+			default:
+				return false;
 		}
 
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-			keyStates |= gameKey;
-			break;
-		case MotionEvent.ACTION_UP:
-		case MotionEvent.ACTION_OUTSIDE:
-		case MotionEvent.ACTION_CANCEL:
-			keyStates &= ~gameKey;
-			break;
-		default:
-			return false;
+		switch (event.getAction())
+		{
+			case MotionEvent.ACTION_DOWN:
+				keyStates |= gameKey;
+				break;
+			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_OUTSIDE:
+			case MotionEvent.ACTION_CANCEL:
+				keyStates &= ~gameKey;
+				break;
+			default:
+				return false;
 		}
 		gameKeyListener.onGameKeyChanged();
 		return true;
 	}
 
-	public boolean onTouch(View v, MotionEvent event) {
+	public boolean onTouch(View v, MotionEvent event)
+	{
 		int id = v.getId();
-		if (id == R.id.dpad)
-			return onDpadTouch(event);
+		if (id == R.id.dpad) return onDpadTouch(event);
 		return onButtonTouch(id, event);
 	}
 }

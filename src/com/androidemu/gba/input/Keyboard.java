@@ -6,8 +6,6 @@ import android.view.View;
 
 public class Keyboard implements View.OnKeyListener {
 
-	private static final String LOG_TAG = "Keyboard";
-
 	private GameKeyListener gameKeyListener;
 	private View.OnKeyListener keyListener;
 	private int[] keysMap = new int[128];

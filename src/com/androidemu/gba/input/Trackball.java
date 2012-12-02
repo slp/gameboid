@@ -4,62 +4,70 @@ import android.view.KeyEvent;
 
 import android.view.View;
 
-public class Trackball implements View.OnKeyListener {
+public class Trackball implements View.OnKeyListener
+{
 
 	private GameKeyListener gameKeyListener;
 	private Keyboard keyboard;
 	private int keyStates;
 
-	public Trackball(Keyboard kb, GameKeyListener listener) {
+	public Trackball(Keyboard kb, GameKeyListener listener)
+	{
 		keyboard = kb;
 		gameKeyListener = listener;
 	}
 
-	public int getKeyStates() {
+	public int getKeyStates()
+	{
 		return keyStates;
 	}
 
-	public void reset() {
+	public void reset()
+	{
 		keyStates = 0;
 	}
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled)
+	{
 		if (enabled)
 			keyboard.setOnKeyListener(this);
-		else {
+		else
+		{
 			keyboard.setOnKeyListener(null);
 			keyStates = 0;
 		}
 	}
 
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		if (event.getRepeatCount() > 0 ||
-				event.getAction() != KeyEvent.ACTION_DOWN)
+	public boolean onKey(View v, int keyCode, KeyEvent event)
+	{
+		if (event.getRepeatCount() > 0 || event.getAction() != KeyEvent.ACTION_DOWN)
 			return false;
 
 		int states;
 
-		switch (keyCode) {
-		case KeyEvent.KEYCODE_DPAD_UP:
-			states = Keycodes.GAMEPAD_UP;
-			break;
-		case KeyEvent.KEYCODE_DPAD_DOWN:
-			states = Keycodes.GAMEPAD_DOWN;
-			break;
-		case KeyEvent.KEYCODE_DPAD_LEFT:
-			states = Keycodes.GAMEPAD_LEFT;
-			break;
-		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			states = Keycodes.GAMEPAD_RIGHT;
-			break;
-		case KeyEvent.KEYCODE_DPAD_CENTER:
-			states = 0;
-			break;
-		default:
-			return false;
+		switch (keyCode)
+		{
+			case KeyEvent.KEYCODE_DPAD_UP:
+				states = Keycodes.GAMEPAD_UP;
+				break;
+			case KeyEvent.KEYCODE_DPAD_DOWN:
+				states = Keycodes.GAMEPAD_DOWN;
+				break;
+			case KeyEvent.KEYCODE_DPAD_LEFT:
+				states = Keycodes.GAMEPAD_LEFT;
+				break;
+			case KeyEvent.KEYCODE_DPAD_RIGHT:
+				states = Keycodes.GAMEPAD_RIGHT;
+				break;
+			case KeyEvent.KEYCODE_DPAD_CENTER:
+				states = 0;
+				break;
+			default:
+				return false;
 		}
 
-		if (keyStates != states) {
+		if (keyStates != states)
+		{
 			keyStates = states;
 			gameKeyListener.onGameKeyChanged();
 		}

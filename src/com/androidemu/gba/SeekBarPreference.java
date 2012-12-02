@@ -10,8 +10,9 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class SeekBarPreference extends DialogPreference
-		implements SeekBar.OnSeekBarChangeListener {
+public class SeekBarPreference extends DialogPreference implements
+		SeekBar.OnSeekBarChangeListener
+{
 
 	private static final String LOG_TAG = "SeekBarPreference";
 	private static final String NS = "http://androidemu.com/apk/res/android";
@@ -21,7 +22,8 @@ public class SeekBarPreference extends DialogPreference
 	private int minValue, maxValue;
 	private int oldValue, newValue;
 
-	public SeekBarPreference(Context context, AttributeSet attrs) {
+	public SeekBarPreference(Context context, AttributeSet attrs)
+	{
 		super(context, attrs);
 
 		minValue = attrs.getAttributeIntValue(NS, "minValue", 0);
@@ -33,13 +35,12 @@ public class SeekBarPreference extends DialogPreference
 	}
 
 	@Override
-	protected void onBindDialogView(View view) {
+	protected void onBindDialogView(View view)
+	{
 		super.onBindDialogView(view);
 
-		if (newValue < minValue)
-			newValue = minValue;
-		if (newValue > maxValue)
-			newValue = maxValue;
+		if (newValue < minValue) newValue = minValue;
+		if (newValue > maxValue) newValue = maxValue;
 
 		seekBar = (SeekBar) view.findViewById(R.id.seekbar);
 		seekBar.setMax(maxValue - minValue);
@@ -51,40 +52,45 @@ public class SeekBarPreference extends DialogPreference
 		valueView.setText(Integer.toString(newValue));
 	}
 
-	public void onProgressChanged(SeekBar seekBar,
-			int progress, boolean fromUser) {
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+	{
 		newValue = progress + minValue;
 		valueView.setText(Integer.toString(newValue));
 	}
 
-	public void onStartTrackingTouch(SeekBar seekBar) {
+	public void onStartTrackingTouch(SeekBar seekBar)
+	{
 	}
 
-	public void onStopTrackingTouch(SeekBar seekBar) {
+	public void onStopTrackingTouch(SeekBar seekBar)
+	{
 	}
 
 	@Override
-	protected void onDialogClosed(boolean positiveResult) {
+	protected void onDialogClosed(boolean positiveResult)
+	{
 		super.onDialogClosed(positiveResult);
 
 		if (!positiveResult)
 			newValue = oldValue;
-		else {
+		else
+		{
 			oldValue = newValue;
 			persistInt(newValue);
 		}
 	}
 
 	@Override
-	protected Object onGetDefaultValue(TypedArray a, int index) {
+	protected Object onGetDefaultValue(TypedArray a, int index)
+	{
 		return a.getInteger(index, 0);
 	}
 
 	@Override
-	protected void onSetInitialValue(
-			boolean restoreValue, Object defaultValue) {
-		oldValue = (restoreValue ?
-				getPersistedInt(0) : ((Integer) defaultValue).intValue());
+	protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
+	{
+		oldValue = (restoreValue ? getPersistedInt(0) : ((Integer) defaultValue)
+				.intValue());
 		newValue = oldValue;
 	}
 }

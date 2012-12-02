@@ -16,137 +16,83 @@ import android.view.KeyEvent;
 
 import com.androidemu.gba.input.Keycodes;
 
-public class GamePreferences extends PreferenceActivity
-		implements Preference.OnPreferenceChangeListener {
+public class GamePreferences extends PreferenceActivity implements
+		Preference.OnPreferenceChangeListener
+{
 
-	private static final String MARKET_SEARCH_URI =
-		"http://market.android.com/search?q=pname:";
+	private static final String MARKET_SEARCH_URI = "http://market.android.com/search?q=pname:";
 
-	public static final int[] gameKeys = {
-		Keycodes.GAMEPAD_UP,
-		Keycodes.GAMEPAD_DOWN,
-		Keycodes.GAMEPAD_LEFT,
-		Keycodes.GAMEPAD_RIGHT,
-		Keycodes.GAMEPAD_UP_LEFT,
-		Keycodes.GAMEPAD_UP_RIGHT,
-		Keycodes.GAMEPAD_DOWN_LEFT,
-		Keycodes.GAMEPAD_DOWN_RIGHT,
-		Keycodes.GAMEPAD_SELECT,
-		Keycodes.GAMEPAD_START,
-		Keycodes.GAMEPAD_A,
-		Keycodes.GAMEPAD_B,
-		Keycodes.GAMEPAD_A_TURBO,
-		Keycodes.GAMEPAD_B_TURBO,
-		Keycodes.GAMEPAD_TL,
-		Keycodes.GAMEPAD_TR,
-	};
+	public static final int[] gameKeys = { Keycodes.GAMEPAD_UP, Keycodes.GAMEPAD_DOWN,
+			Keycodes.GAMEPAD_LEFT, Keycodes.GAMEPAD_RIGHT, Keycodes.GAMEPAD_UP_LEFT,
+			Keycodes.GAMEPAD_UP_RIGHT, Keycodes.GAMEPAD_DOWN_LEFT,
+			Keycodes.GAMEPAD_DOWN_RIGHT, Keycodes.GAMEPAD_SELECT, Keycodes.GAMEPAD_START,
+			Keycodes.GAMEPAD_A, Keycodes.GAMEPAD_B, Keycodes.GAMEPAD_A_TURBO,
+			Keycodes.GAMEPAD_B_TURBO, Keycodes.GAMEPAD_TL, Keycodes.GAMEPAD_TR, };
 
-	public static final String[] keyPrefKeys = {
-		"gamepad_up",
-		"gamepad_down",
-		"gamepad_left",
-		"gamepad_right",
-		"gamepad_up_left",
-		"gamepad_up_right",
-		"gamepad_down_left",
-		"gamepad_down_right",
-		"gamepad_select",
-		"gamepad_start",
-		"gamepad_A",
-		"gamepad_B",
-		"gamepad_A_turbo",
-		"gamepad_B_turbo",
-		"gamepad_TL",
-		"gamepad_TR",
-	};
+	public static final String[] keyPrefKeys = { "gamepad_up", "gamepad_down",
+			"gamepad_left", "gamepad_right", "gamepad_up_left", "gamepad_up_right",
+			"gamepad_down_left", "gamepad_down_right", "gamepad_select", "gamepad_start",
+			"gamepad_A", "gamepad_B", "gamepad_A_turbo", "gamepad_B_turbo", "gamepad_TL",
+			"gamepad_TR", };
 
-	private static final int[] keyDisplayNames = {
-		R.string.gamepad_up,
-		R.string.gamepad_down,
-		R.string.gamepad_left,
-		R.string.gamepad_right,
-		R.string.gamepad_up_left,
-		R.string.gamepad_up_right,
-		R.string.gamepad_down_left,
-		R.string.gamepad_down_right,
-		R.string.gamepad_select,
-		R.string.gamepad_start,
-		R.string.gamepad_A,
-		R.string.gamepad_B,
-		R.string.gamepad_A_turbo,
-		R.string.gamepad_B_turbo,
-		R.string.gamepad_TL,
-		R.string.gamepad_TR,
-	};
+	private static final int[] keyDisplayNames = { R.string.gamepad_up,
+			R.string.gamepad_down, R.string.gamepad_left, R.string.gamepad_right,
+			R.string.gamepad_up_left, R.string.gamepad_up_right,
+			R.string.gamepad_down_left, R.string.gamepad_down_right,
+			R.string.gamepad_select, R.string.gamepad_start, R.string.gamepad_A,
+			R.string.gamepad_B, R.string.gamepad_A_turbo, R.string.gamepad_B_turbo,
+			R.string.gamepad_TL, R.string.gamepad_TR, };
 
-	private static final int defaultKeys_qwerty[] = {
-		KeyEvent.KEYCODE_1,
-		KeyEvent.KEYCODE_A,
-		KeyEvent.KEYCODE_Q,
-		KeyEvent.KEYCODE_W,
-		0, 0, 0, 0,
-		KeyEvent.KEYCODE_DEL,
-		KeyEvent.KEYCODE_ENTER,
-		KeyEvent.KEYCODE_P,
-		KeyEvent.KEYCODE_O,
-		KeyEvent.KEYCODE_0,
-		KeyEvent.KEYCODE_9,
-		KeyEvent.KEYCODE_K,
-		KeyEvent.KEYCODE_L,
-	};
+	private static final int defaultKeys_qwerty[] = { KeyEvent.KEYCODE_1,
+			KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_Q, KeyEvent.KEYCODE_W, 0, 0, 0, 0,
+			KeyEvent.KEYCODE_DEL, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_P,
+			KeyEvent.KEYCODE_O, KeyEvent.KEYCODE_0, KeyEvent.KEYCODE_9,
+			KeyEvent.KEYCODE_K, KeyEvent.KEYCODE_L, };
 
-	private static final int defaultKeys_non_qwerty[] = {
-		0, 0, 0, 0,
-		0, 0, 0, 0,
-		KeyEvent.KEYCODE_VOLUME_UP,
-		KeyEvent.KEYCODE_VOLUME_DOWN,
-		KeyEvent.KEYCODE_SEARCH,
-		KeyEvent.KEYCODE_BACK,
-		0,
-		0,
-		KeyEvent.KEYCODE_CALL,
-		KeyEvent.KEYCODE_CAMERA,
-	};
+	private static final int defaultKeys_non_qwerty[] = { 0, 0, 0, 0, 0, 0, 0, 0,
+			KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN,
+			KeyEvent.KEYCODE_SEARCH, KeyEvent.KEYCODE_BACK, 0, 0, KeyEvent.KEYCODE_CALL,
+			KeyEvent.KEYCODE_CAMERA, };
 
-	static {
+	static
+	{
 		final int n = gameKeys.length;
-		if (keyPrefKeys.length != n ||
-				keyDisplayNames.length != n ||
-				defaultKeys_qwerty.length != n ||
-				defaultKeys_non_qwerty.length != n)
+		if (keyPrefKeys.length != n || keyDisplayNames.length != n
+				|| defaultKeys_qwerty.length != n || defaultKeys_non_qwerty.length != n)
 			throw new AssertionError("Key configurations are not consistent");
 	}
 
-
-	private static boolean isKeyboardQwerty(Context context) {
-		return (context.getResources().getConfiguration().keyboard ==
-				Configuration.KEYBOARD_QWERTY);
+	private static boolean isKeyboardQwerty(Context context)
+	{
+		return (context.getResources().getConfiguration().keyboard == Configuration.KEYBOARD_QWERTY);
 	}
 
-	public static int[] getDefaultKeys(Context context) {
-		return (isKeyboardQwerty(context) ?
-				defaultKeys_qwerty : defaultKeys_non_qwerty);
+	public static int[] getDefaultKeys(Context context)
+	{
+		return (isKeyboardQwerty(context) ? defaultKeys_qwerty : defaultKeys_non_qwerty);
 	}
 
-	public static boolean getDefaultVirtualKeypadEnabled(Context context) {
+	public static boolean getDefaultVirtualKeypadEnabled(Context context)
+	{
 		return !isKeyboardQwerty(context);
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 
 		setTitle(R.string.settings_title);
 		addPreferencesFromResource(R.xml.preferences);
 
-		findPreference("enableVirtualKeypad").
-				setDefaultValue(getDefaultVirtualKeypadEnabled(this));
+		findPreference("enableVirtualKeypad").setDefaultValue(
+				getDefaultVirtualKeypadEnabled(this));
 
-		PreferenceGroup group =
-				(PreferenceGroup) findPreference("gameKeyBindings");
+		PreferenceGroup group = (PreferenceGroup) findPreference("gameKeyBindings");
 
 		int[] defaultKeys = getDefaultKeys(this);
-		for (int i = 0; i < keyPrefKeys.length; i++) {
+		for (int i = 0; i < keyPrefKeys.length; i++)
+		{
 			GameKeyPreference pref = new GameKeyPreference(this);
 			pref.setKey(keyPrefKeys[i]);
 			pref.setTitle(keyDisplayNames[i]);
@@ -154,8 +100,8 @@ public class GamePreferences extends PreferenceActivity
 			group.addPreference(pref);
 		}
 
-		Intent intent = new Intent(Intent.ACTION_VIEW,
-				Uri.parse(MARKET_SEARCH_URI + getPackageName()));
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_SEARCH_URI
+				+ getPackageName()));
 		findPreference("appAbout").setIntent(intent);
 
 		intent = new Intent(Intent.ACTION_WEB_SEARCH);
@@ -166,33 +112,36 @@ public class GamePreferences extends PreferenceActivity
 		setListSummary("scalingMode", "stretch");
 	}
 
-	private void setListSummary(String key, String def) {
-		SharedPreferences sharedPref = PreferenceManager.
-				getDefaultSharedPreferences(this);
+	private void setListSummary(String key, String def)
+	{
+		SharedPreferences sharedPref = PreferenceManager
+				.getDefaultSharedPreferences(this);
 
 		Preference pref = findPreference(key);
 		pref.setOnPreferenceChangeListener(this);
 		updateListSummary(pref, sharedPref.getString(key, def));
 	}
 
-	private void updateListSummary(Preference preference, Object newValue) {
+	private void updateListSummary(Preference preference, Object newValue)
+	{
 		ListPreference list = (ListPreference) preference;
 		CharSequence[] values = list.getEntryValues();
 		int i;
-		for (i = 0; i < values.length; i++) {
-			if (values[i].equals(newValue))
-				break;
+		for (i = 0; i < values.length; i++)
+		{
+			if (values[i].equals(newValue)) break;
 		}
-		if (i >= values.length)
-			i = 0;
+		if (i >= values.length) i = 0;
 
 		list.setSummary(list.getEntries()[i]);
 	}
 
-	public boolean onPreferenceChange(Preference preference, Object newValue) {
+	public boolean onPreferenceChange(Preference preference, Object newValue)
+	{
 		String key = preference.getKey();
 
-		if (key.equals("scalingMode")) {
+		if (key.equals("scalingMode"))
+		{
 			updateListSummary(preference, newValue);
 		}
 		return true;
