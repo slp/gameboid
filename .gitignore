@@ -1,10 +1,7 @@
-gen
-bin/*
-/gen
-/obj
-obj
-bin
+/gen/
+/obj/
+/bin/
+/libs/
 project.properties
-libs/
 .DS_Store
 *~
