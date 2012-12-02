@@ -5,6 +5,6 @@ bin/*
 obj
 bin
 project.properties
-libs/*
+libs/
 .DS_Store
 *~
