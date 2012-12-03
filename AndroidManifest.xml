@@ -19,8 +19,9 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="FileChooser" />
 		<activity android:name="GamePreferences" />
-
+		
+		<!-- common components - will be omitted after manifest merging support -->
+		<activity android:name="com.androidemu.FileChooser" />
 	</application>
 </manifest>

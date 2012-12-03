@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
@@ -19,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 
+import com.androidemu.FileChooser;
 import com.androidemu.gba.input.GameKeyListener;
 import com.androidemu.gba.input.Keyboard;
 import com.androidemu.gba.input.Keycodes;
@@ -34,9 +36,6 @@ import java.io.OutputStream;
 public class GameBoid extends Activity implements GameKeyListener,
 		DialogInterface.OnCancelListener
 {
-
-	private static final String LOG_TAG = "GameBoid";
-
 	private static final int REQUEST_BROWSE_ROM = 1;
 	private static final int REQUEST_BROWSE_BIOS = 2;
 	private static final int REQUEST_SETTINGS = 3;
@@ -301,14 +300,13 @@ public class GameBoid extends Activity implements GameKeyListener,
 			case REQUEST_BROWSE_ROM:
 				if (result == RESULT_OK)
 				{
-					lastPickedGame = data.getStringExtra(FileChooser.EXTRA_FILEPATH);
+					lastPickedGame = data.getData().getPath();
 					loadROM(lastPickedGame);
 				}
 				break;
 
 			case REQUEST_BROWSE_BIOS:
-				loadBIOS(result == RESULT_OK ? data
-						.getStringExtra(FileChooser.EXTRA_FILEPATH) : null);
+				loadBIOS(result == RESULT_OK ? data.getData().getPath() : null);
 				break;
 
 			case REQUEST_SETTINGS:
@@ -551,7 +549,7 @@ public class GameBoid extends Activity implements GameKeyListener,
 		Intent intent = new Intent(this, FileChooser.class);
 		intent.putExtra(FileChooser.EXTRA_TITLE,
 				getResources().getString(R.string.title_select_bios));
-		intent.putExtra(FileChooser.EXTRA_FILEPATH, initial);
+		intent.setData(Uri.fromFile(new File(initial)));
 		intent.putExtra(FileChooser.EXTRA_FILTERS, new String[] { ".bin" });
 		startActivityForResult(intent, REQUEST_BROWSE_BIOS);
 	}
@@ -628,7 +626,7 @@ public class GameBoid extends Activity implements GameKeyListener,
 		Intent intent = new Intent(this, FileChooser.class);
 		intent.putExtra(FileChooser.EXTRA_TITLE,
 				getResources().getString(R.string.title_select_rom));
-		intent.putExtra(FileChooser.EXTRA_FILEPATH, lastPickedGame);
+		intent.setData(Uri.fromFile(new File(lastPickedGame)));
 		intent.putExtra(FileChooser.EXTRA_FILTERS,
 				new String[] { ".gba", ".bin", ".zip" });
 		startActivityForResult(intent, REQUEST_BROWSE_ROM);
