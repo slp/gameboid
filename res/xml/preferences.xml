@@ -20,7 +20,7 @@
 				android:title="@string/auto_frame_skip"
 				android:defaultValue="true"/>
 
-		<com.androidemu.gba.SeekBarPreference
+		<com.androidemu.SeekBarPreference
 				android:key="maxFrameSkips"
 				android:title="@string/max_frame_skips"
 				android:summary="@string/max_frame_skips_summary"
