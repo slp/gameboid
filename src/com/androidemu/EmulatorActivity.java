@@ -1,4 +1,4 @@
-package com.androidemu.gba;
+package com.androidemu;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,8 +19,16 @@ import android.view.WindowManager;
 
 import android.widget.Toast;
 
-
 import com.androidemu.FileChooser;
+import com.androidemu.gba.Emulator;
+import com.androidemu.gba.EmulatorView;
+import com.androidemu.gba.GamePreferences;
+import com.androidemu.gba.R;
+import com.androidemu.gba.R.array;
+import com.androidemu.gba.R.id;
+import com.androidemu.gba.R.layout;
+import com.androidemu.gba.R.menu;
+import com.androidemu.gba.R.string;
 import com.androidemu.gba.input.GameKeyListener;
 import com.androidemu.gba.input.Keyboard;
 import com.androidemu.gba.input.Keycodes;
@@ -33,7 +41,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class GameBoid extends Activity implements GameKeyListener,
+public class EmulatorActivity extends Activity implements GameKeyListener,
 		DialogInterface.OnCancelListener
 {
 	private static final int REQUEST_BROWSE_ROM = 1;
@@ -80,17 +88,18 @@ public class GameBoid extends Activity implements GameKeyListener,
 		setContentView(R.layout.main);
 		emulatorView = (EmulatorView) findViewById(R.id.emulator);
 		emulatorView.setEmulator(emulator);
-		
+
 		switchToView(R.id.empty);
 
 		// create physical keyboard and trackball
 		keyboard = new Keyboard(emulatorView, this);
 		trackball = new Trackball(keyboard, this);
-		
+
 		keypad = new VirtualKeypad(this);
 		keypad.setGameKeyListener(this);
-		addContentView(keypad, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-		
+		addContentView(keypad, new ViewGroup.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
 		// copy preset files
 		copyAsset(new File(datadir, "game_config.txt"));
 
@@ -116,6 +125,9 @@ public class GameBoid extends Activity implements GameKeyListener,
 					quickLoad();
 			}
 		}
+
+		startService(new Intent(this, EmulatorService.class)
+				.setAction(EmulatorService.ACTION_FOREGROUND));
 	}
 
 	@Override
@@ -129,6 +141,8 @@ public class GameBoid extends Activity implements GameKeyListener,
 			emulator.cleanUp();
 			emulator = null;
 		}
+		
+		stopService(new Intent(this, EmulatorService.class));
 	}
 
 	@Override
@@ -144,7 +158,7 @@ public class GameBoid extends Activity implements GameKeyListener,
 		super.onResume();
 		resumeEmulator();
 	}
-	
+
 	@Override
 	protected void onStop()
 	{
@@ -443,9 +457,10 @@ public class GameBoid extends Activity implements GameKeyListener,
 		emulator.setOption("soundEnabled", settings.getBoolean("soundEnabled", true));
 
 		trackball.setEnabled(settings.getBoolean("enableTrackball", false));
-		if (keypad != null) keypad.setVisibility(settings.getBoolean("enableVirtualKeypad",
-				GamePreferences.getDefaultVirtualKeypadEnabled(this)) ? View.VISIBLE
-				: View.GONE);
+		if (keypad != null)
+			keypad.setVisibility(settings.getBoolean("enableVirtualKeypad",
+					GamePreferences.getDefaultVirtualKeypadEnabled(this)) ? View.VISIBLE
+					: View.GONE);
 
 		emulatorView.setScalingMode(getScalingMode(settings.getString("scalingMode",
 				"stretch")));

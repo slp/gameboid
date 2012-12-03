@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 		package="com.androidemu.gba"
 		android:versionCode="6"
-		android:versionName="1.3.2">
+		android:versionName="1.3.2"
+		android:installLocation="preferExternal">
 
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="10"/>
 
@@ -11,7 +12,9 @@
 	<application android:label="@string/app_label" android:hardwareAccelerated="true"
 			android:icon="@drawable/app_icon" android:allowBackup="true">
 
-		<activity android:name="GameBoid">
+		<activity android:name="com.androidemu.EmulatorActivity"
+		    android:process=":emulator"
+		    android:launchMode="singleTask">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -23,5 +26,6 @@
 		
 		<!-- common components - will be omitted after manifest merging support -->
 		<activity android:name="com.androidemu.FileChooser" />
+		<service android:name="com.androidemu.EmulatorService" android:process=":emulator"/>
 	</application>
 </manifest>
