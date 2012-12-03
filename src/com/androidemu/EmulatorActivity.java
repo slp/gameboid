@@ -564,7 +564,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		Intent intent = new Intent(this, FileChooser.class);
 		intent.putExtra(FileChooser.EXTRA_TITLE,
 				getResources().getString(R.string.title_select_bios));
-		intent.setData(Uri.fromFile(new File(initial)));
+		intent.setData(initial == null ? null : Uri.fromFile(new File(initial)));
 		intent.putExtra(FileChooser.EXTRA_FILTERS, new String[] { ".bin" });
 		startActivityForResult(intent, REQUEST_BROWSE_BIOS);
 	}
@@ -641,7 +641,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		Intent intent = new Intent(this, FileChooser.class);
 		intent.putExtra(FileChooser.EXTRA_TITLE,
 				getResources().getString(R.string.title_select_rom));
-		intent.setData(Uri.fromFile(new File(lastPickedGame)));
+		intent.setData(lastPickedGame == null ? null : Uri.fromFile(new File(lastPickedGame)));
 		intent.putExtra(FileChooser.EXTRA_FILTERS,
 				new String[] { ".gba", ".bin", ".zip" });
 		startActivityForResult(intent, REQUEST_BROWSE_ROM);
