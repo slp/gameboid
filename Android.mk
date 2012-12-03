@@ -17,4 +17,3 @@ MY_DIR := $(LOCAL_PATH)
 
 # Also build all of the sub-targets under this one: the shared library.
 include $(call all-makefiles-under,$(LOCAL_PATH))
-include $(APP_PROJECT_PATH)/../emudroid-common/jni/libnativehelper/Android.mk

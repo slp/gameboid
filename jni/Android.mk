@@ -36,7 +36,7 @@ LOCAL_C_INCLUDES += \
 	$(EMU_LIBRARY_PATH)/jni/ \
 	$(LOCAL_PATH)
 
-LOCAL_LDLIBS := -lz -llog
+LOCAL_LDLIBS := -lz -llog -L$(EMU_LIBRARY_PATH)/libs/$(TARGET_ARCH_ABI)/ -lnativehelper
 
 # Compiler flags.
 LOCAL_CFLAGS += -O3 -fvisibility=hidden

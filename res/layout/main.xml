@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <com.androidemu.EmulatorView
+    <com.androidemu.gba.EmulatorView
         android:id="@+id/emulator"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />

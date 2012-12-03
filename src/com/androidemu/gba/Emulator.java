@@ -1,4 +1,4 @@
-package com.androidemu;
+package com.androidemu.gba;
 
 public class Emulator
 {

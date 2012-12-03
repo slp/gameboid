@@ -18,8 +18,6 @@ import android.view.WindowManager;
 
 import android.widget.Toast;
 
-import com.androidemu.Emulator;
-import com.androidemu.EmulatorView;
 
 import com.androidemu.gba.input.GameKeyListener;
 import com.androidemu.gba.input.Keyboard;

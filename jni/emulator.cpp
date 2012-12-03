@@ -372,7 +372,7 @@ static void Emulator_run(JNIEnv *env, jobject self)
 int register_Emulator(JNIEnv *env)
 {
 	static const JNINativeMethod methods[] = {
-		{ "setRenderSurface", "(Lcom/androidemu/EmulatorView;II)V",
+		{ "setRenderSurface", "(Lcom/androidemu/gba/EmulatorView;II)V",
 				(void *) Emulator_setRenderSurface },
 		{ "setKeyStates", "(I)V",
 				(void *) Emulator_setKeyStates },
@@ -394,7 +394,7 @@ int register_Emulator(JNIEnv *env)
 		{ "loadState", "(Ljava/lang/String;)Z", (void *) Emulator_loadState },
 	};
 
-	return jniRegisterNativeMethods(env, "com/androidemu/Emulator",
+	return jniRegisterNativeMethods(env, "com/androidemu/gba/Emulator",
 			methods, NELEM(methods));
 }
 

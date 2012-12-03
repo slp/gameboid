@@ -1,4 +1,4 @@
-package com.androidemu;
+package com.androidemu.gba;
 
 import android.content.Context;
 import android.graphics.Canvas;
