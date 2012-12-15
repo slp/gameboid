@@ -61,6 +61,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	private static Thread emuThread;
 
 	private EmulatorView emulatorView;
+	private View placeholder;
 	private Keyboard keyboard;
 	private VirtualKeypad keypad;
 	private Trackball trackball;
@@ -86,10 +87,11 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			return;
 		}
 		setContentView(R.layout.main);
+		
 		emulatorView = (EmulatorView) findViewById(R.id.emulator);
+		placeholder = findViewById(R.id.empty);
+		
 		emulatorView.setEmulator(emulator);
-
-		switchToView(R.id.empty);
 
 		// create physical keyboard and trackball
 		keyboard = new Keyboard(emulatorView, this);
@@ -111,7 +113,6 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		// restore state if any
 		if (savedInstanceState != null)
 			currentGame = savedInstanceState.getString("currentGame");
-		switchToView(currentGame == null ? R.id.empty : R.id.emulator);
 
 		// load BIOS
 		if (loadBIOS(settings.getString("bios", null)))
@@ -482,25 +483,19 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 
 		resumeEmulator();
 	}
-
-	private void switchToView(int id)
+	
+	private void showPlaceholder()
 	{
-		final int viewIds[] = { R.id.empty, R.id.emulator };
-		for (int i = 0; i < viewIds.length; i++)
-		{
-			View v = findViewById(viewIds[i]);
-			if (viewIds[i] == id)
-			{
-				v.bringToFront();
-				v.setVisibility(View.VISIBLE);
-			}
-			else
-			{
-				v.setVisibility(View.INVISIBLE);
-			}
-		}
+		emulatorView.setVisibility(View.INVISIBLE);
+		placeholder.setVisibility(View.VISIBLE);
 	}
-
+	
+	private void hidePlaceholder()
+	{
+		placeholder.setVisibility(View.GONE);
+		emulatorView.setVisibility(View.VISIBLE);
+	}
+	
 	private Dialog createLoadStateDialog()
 	{
 		DialogInterface.OnClickListener l = new DialogInterface.OnClickListener()
@@ -622,7 +617,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			return false;
 		}
 		currentGame = fname;
-		switchToView(R.id.emulator);
+		hidePlaceholder();
 		return true;
 	}
 
@@ -632,7 +627,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		{
 			emulator.unloadROM();
 			currentGame = null;
-			switchToView(R.id.empty);
+			showPlaceholder();
 		}
 	}
 
