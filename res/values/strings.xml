@@ -55,11 +55,6 @@
 	<string name="search_roms">Search ROMs</string>
 	<string name="search_roms_keyword">GBA ROMs download</string>
 
-	<string name="press_key_prompt">Press a key on the keyboard...</string>
-	<string name="key_none">&lt;none&gt;</string>
-	<string name="key_unknown">&lt;unknown&gt;</string>
-	<string name="key_clear">Clear</string>
-
 	<string name="gamepad_up">Up</string>
 	<string name="gamepad_down">Down</string>
 	<string name="gamepad_left">Left</string>

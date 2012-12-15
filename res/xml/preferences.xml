@@ -36,11 +36,11 @@
 					android:title="@string/game_key_bindings"/>
 
 			<PreferenceCategory android:title="@string/shortcut_keys">
-				<com.androidemu.gba.GameKeyPreference
+				<com.androidemu.GameKeyPreference
 						android:key="quickLoad"
 						android:title="@string/quick_load"
 						android:defaultValue="0"/>
-				<com.androidemu.gba.GameKeyPreference
+				<com.androidemu.GameKeyPreference
 						android:key="quickSave"
 						android:title="@string/quick_save"
 						android:defaultValue="0"/>

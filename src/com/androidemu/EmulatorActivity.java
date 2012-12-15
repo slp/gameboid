@@ -209,6 +209,12 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	}
 
 	@Override
+	public boolean dispatchKeyEvent(KeyEvent event)
+	{
+		return keyboard.onKey(null, event.getKeyCode(), event);
+	}
+	
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
 		if (keyCode == quickLoadKey)
