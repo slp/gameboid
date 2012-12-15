@@ -34,6 +34,7 @@ import com.androidemu.gba.input.Keyboard;
 import com.androidemu.gba.input.Keycodes;
 import com.androidemu.gba.input.VirtualKeypad;
 import com.androidemu.gba.input.Trackball;
+import com.androidemu.wrapper.Wrapper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -211,6 +212,29 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event)
 	{
+		if (Wrapper.KeyEvent_isLongPress(event))
+		{
+			switch (event.getKeyCode())
+			{
+				case KeyEvent.KEYCODE_MENU:
+					// help those in dire situation due to mapping
+					// MENU to something
+					if (isMenuShowing)
+					{
+						closeOptionsMenu();
+					}
+					else
+					{
+						openOptionsMenu();
+					}
+					return false;
+				case KeyEvent.KEYCODE_HOME:
+					// TODO: long-pressing HOME should result in special(C)
+					// dark magic on crazed tablets
+					return false;
+			}
+		}
+		
 		return keyboard.onKey(null, event.getKeyCode(), event);
 	}
 	
