@@ -43,7 +43,7 @@ static int surfaceWidth, surfaceHeight;
 static jintArray jImage;
 static jmethodID jSendImageMethod;
 
-static void pauseEmulator()
+static void pauseEmulator(JNIEnv *env, jobject self)
 {
 	pthread_mutex_lock(&emuStateMutex);
 	if (emuState == EMUSTATE_RUNNING) {
@@ -54,7 +54,7 @@ static void pauseEmulator()
 	pthread_mutex_unlock(&emuStateMutex);
 
 	if (global_enable_audio && media != NULL)
-		media->audioPause(jEnv);
+		media->audioPause(env);
 }
 
 static void resumeEmulator(int restart = 0)
@@ -75,15 +75,15 @@ static void resumeEmulator(int restart = 0)
 	pthread_mutex_unlock(&emuStateMutex);
 }
 
-static void unloadROM()
+static void unloadROM(JNIEnv *env, jobject self)
 {
 	if (!romLoaded)
 		return;
 
-	pauseEmulator();
+	pauseEmulator(env, self);
 
 	if (media != NULL)
-		media->audioStop(jEnv);
+		media->audioStop(env);
 
 	romLoaded = false;
 }
@@ -194,7 +194,7 @@ Emulator_initialize(JNIEnv *env, jobject self,
 
 static void Emulator_cleanUp(JNIEnv *env, jobject self)
 {
-	unloadROM();
+	unloadROM(env, self);
 
 	if (media != NULL) {
 		media->destroy(env);
@@ -206,7 +206,7 @@ static void
 Emulator_setRenderSurface(JNIEnv *env, jobject self,
 		jobject surface, int width, int height)
 {
-	pauseEmulator();
+	pauseEmulator(env, self);
 
 	if (renderSurface != NULL) {
 		env->DeleteGlobalRef(jImage);
@@ -263,7 +263,7 @@ Emulator_setOption(JNIEnv *env, jobject self, jstring jname, jstring jvalue)
 
 static void Emulator_reset(JNIEnv *env, jobject self)
 {
-	pauseEmulator();
+	pauseEmulator(env, self);
 	reset_gba();
 	reg[CHANGED_PC_STATUS] = 1;
 	resumeEmulator(1);
@@ -293,7 +293,7 @@ static jboolean Emulator_loadBIOS(JNIEnv *env, jobject self, jstring jfile)
 
 static jboolean Emulator_loadROM(JNIEnv *env, jobject self, jstring jfile)
 {
-	unloadROM();
+	unloadROM(env, self);
 
 	const char *file = env->GetStringUTFChars(jfile, NULL);
 	jboolean rv = JNI_FALSE;
@@ -317,13 +317,13 @@ error:
 
 static void Emulator_unloadROM(JNIEnv *env, jobject self)
 {
-	unloadROM();
+	unloadROM(env, self);
 }
 
 static void Emulator_pause(JNIEnv *env, jobject self)
 {
+	pauseEmulator(env, self);
 	resumeRequested = false;
-	pauseEmulator();
 }
 
 static void Emulator_resume(JNIEnv *env, jobject self)
@@ -336,7 +336,7 @@ static jboolean Emulator_saveState(JNIEnv *env, jobject self, jstring jfile)
 {
 	const char *file = env->GetStringUTFChars(jfile, NULL);
 
-	pauseEmulator();
+	pauseEmulator(env, self);
 	save_state(file);
 	resumeEmulator();
 
@@ -348,7 +348,7 @@ static jboolean Emulator_loadState(JNIEnv *env, jobject self, jstring jfile)
 {
 	const char *file = env->GetStringUTFChars(jfile, NULL);
 
-	pauseEmulator();
+	pauseEmulator(env, self);
 	load_state(file);
 	resumeEmulator(1);
 
