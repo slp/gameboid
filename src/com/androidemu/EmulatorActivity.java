@@ -228,6 +228,13 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+	
+	@Override
+	public boolean onSearchRequested()
+	{
+		// not welcome here
+		return false;
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
