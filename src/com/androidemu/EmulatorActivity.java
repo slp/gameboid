@@ -1,46 +1,46 @@
 package com.androidemu;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-
-import android.widget.Toast;
-
-import com.androidemu.FileChooser;
-import com.androidemu.gba.Emulator;
-import com.androidemu.gba.EmulatorView;
-import com.androidemu.gba.GamePreferences;
-import com.androidemu.gba.R;
-import com.androidemu.gba.R.array;
-import com.androidemu.gba.R.id;
-import com.androidemu.gba.R.layout;
-import com.androidemu.gba.R.menu;
-import com.androidemu.gba.R.string;
-import com.androidemu.gba.input.GameKeyListener;
-import com.androidemu.gba.input.Keyboard;
-import com.androidemu.gba.input.Keycodes;
-import com.androidemu.gba.input.VirtualKeypad;
-import com.androidemu.gba.input.Trackball;
-import com.androidemu.wrapper.Wrapper;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+
+import android.net.Uri;
+
+import android.os.Bundle;
+
+import android.preference.PreferenceManager;
+
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+
+import android.widget.Toast;
+
+import com.androidemu.FileChooser;
+
+import com.androidemu.gba.R;
+import com.androidemu.gba.Emulator;
+import com.androidemu.gba.EmulatorView;
+import com.androidemu.gba.GamePreferences;
+import com.androidemu.gba.input.GameKeyListener;
+import com.androidemu.gba.input.Keyboard;
+import com.androidemu.gba.input.Keycodes;
+import com.androidemu.gba.input.VirtualKeypad;
+import com.androidemu.gba.input.Trackball;
+
+import com.androidemu.wrapper.Wrapper;
 
 public class EmulatorActivity extends Activity implements GameKeyListener,
 		DialogInterface.OnCancelListener
@@ -78,8 +78,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	{
 		super.onCreate(savedInstanceState);
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		Wrapper.setFullScreen(getWindow());
 
 		File datadir = getDir("data", MODE_PRIVATE);
 		if (!initEmulator(datadir))
@@ -128,8 +127,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			}
 		}
 
-		startService(new Intent(this, EmulatorService.class)
-				.setAction(EmulatorService.ACTION_FOREGROUND));
+		startService(new Intent(this, EmulatorService.class).setAction(EmulatorService.ACTION_FOREGROUND));
 	}
 
 	@Override
