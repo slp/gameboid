@@ -14,7 +14,8 @@
 
 		<activity android:name="com.androidemu.EmulatorActivity"
 		    android:process=":emulator"
-		    android:launchMode="singleTask">
+		    android:launchMode="singleTask"
+		    android:configChanges="keyboard|screenSize|orientation">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.DEFAULT" />
