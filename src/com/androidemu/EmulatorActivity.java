@@ -100,10 +100,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		keyboard = new Keyboard(emulatorView, this);
 		trackball = new Trackball(keyboard, this);
 
-		keypad = new VirtualKeypad(this);
-		keypad.setGameKeyListener(this);
-		addContentView(keypad, new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+		((VirtualKeypad)findViewById(R.id.keypad)).setGameKeyListener(this);
 
 		// copy preset files
 		copyAsset(new File(datadir, "game_config.txt"));
@@ -130,6 +127,8 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			}
 		}
 
+		showPlaceholder();
+		
 		startService(new Intent(this, EmulatorService.class).setAction(EmulatorService.ACTION_FOREGROUND));
 	}
 
@@ -656,6 +655,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		}
 		currentGame = fname;
 		hidePlaceholder();
+		emulatorView.setActualSize(emulator.VIDEO_W, emulator.VIDEO_H);
 		return true;
 	}
 

@@ -1,23 +1,28 @@
 package com.androidemu.gba;
 
 import android.content.Context;
+
 import android.graphics.Canvas;
+
 import android.util.AttributeSet;
 import android.util.Log;
+
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class EmulatorView extends SurfaceView implements SurfaceHolder.Callback
 {
-
 	public static final int SCALING_ORIGINAL = 0;
 	public static final int SCALING_PROPORTIONAL = 1;
 	public static final int SCALING_STRETCH = 2;
-
-	private static final String LOG_TAG = "EmulatorView";
+	public static final int SCALING_2X = 3;
 
 	private Emulator emulator;
 	private int scalingMode = SCALING_STRETCH;
+	
+	private int actualWidth;
+	private int actualHeight;
+	private float aspectRatio;
 
 	public EmulatorView(Context context, AttributeSet attrs)
 	{
@@ -69,40 +74,81 @@ public class EmulatorView extends SurfaceView implements SurfaceHolder.Callback
 		emulator.setRenderSurface(this, width, height);
 	}
 
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	public void setActualSize(int w, int h)
 	{
-		int specWidth = MeasureSpec.getSize(widthMeasureSpec);
-		int specHeight = MeasureSpec.getSize(heightMeasureSpec);
-		int w, h;
+		if (actualWidth != w || actualHeight != h)
+		{
+			actualWidth = w;
+			actualHeight = h;
+			updateSurfaceSize();
+		}
+	}
+	
+	public void setAspectRatio(float ratio)
+	{
+		if (aspectRatio != ratio)
+		{
+			aspectRatio = ratio;
+			updateSurfaceSize();
+		}
+	}
+	
+	@Override
+	protected void onSizeChanged(int w, int h, int oldw, int oldh)
+	{
+		updateSurfaceSize();
+	}
+	
+	private void updateSurfaceSize()
+	{
+		int viewWidth = getWidth();
+		int viewHeight = getHeight();
+		if (viewWidth == 0 || viewHeight == 0 || actualWidth == 0 || actualHeight == 0)
+			return;
+
+		int w = 0;
+		int h = 0;
+
+		if (scalingMode != SCALING_STRETCH && aspectRatio != 0)
+		{
+			float ratio = aspectRatio * actualHeight / actualWidth;
+			viewWidth = (int) (viewWidth / ratio);
+		}
 
 		switch (scalingMode)
 		{
 			case SCALING_ORIGINAL:
-				w = Emulator.VIDEO_W;
-				h = Emulator.VIDEO_H;
+				w = viewWidth;
+				h = viewHeight;
 				break;
+
+			case SCALING_2X:
+				w = viewWidth / 2;
+				h = viewHeight / 2;
+				break;
+
 			case SCALING_STRETCH:
-				if (specWidth >= specHeight)
+				if (viewWidth * actualHeight >= viewHeight * actualWidth)
 				{
-					w = specWidth;
-					h = specHeight;
-					break;
-				}
-				// fall through
-			case SCALING_PROPORTIONAL:
-				h = specHeight;
-				w = h * Emulator.VIDEO_W / Emulator.VIDEO_H;
-				if (w > specWidth)
-				{
-					w = specWidth;
-					h = w * Emulator.VIDEO_H / Emulator.VIDEO_W;
+					w = actualWidth;
+					h = actualHeight;
 				}
 				break;
-			default:
-				super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-				return;
 		}
 
-		setMeasuredDimension(w, h);
+		if (w < actualWidth || h < actualHeight)
+		{
+			h = actualHeight;
+			w = h * viewWidth / viewHeight;
+			if (w < actualWidth)
+			{
+				w = actualWidth;
+				h = w * viewHeight / viewWidth;
+			}
+		}
+
+		w = (w + 3) & ~3;
+		h = (h + 3) & ~3;
+		getHolder().setFixedSize(w, h);
 	}
 }

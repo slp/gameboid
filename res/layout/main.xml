@@ -7,6 +7,12 @@
         android:id="@+id/emulator"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
+    
+    <com.androidemu.gba.input.VirtualKeypad
+        android:id="@+id/keypad"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:focusableInTouchMode="true" />
 
     <TextView
         android:id="@+id/empty"
