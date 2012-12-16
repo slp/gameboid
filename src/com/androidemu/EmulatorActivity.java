@@ -14,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import android.media.AudioManager;
 import android.net.Uri;
 
 import android.os.Bundle;
@@ -79,6 +80,8 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		super.onCreate(savedInstanceState);
 
 		Wrapper.setFullScreen(getWindow());
+		
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		File datadir = getDir("data", MODE_PRIVATE);
 		if (!initEmulator(datadir))
