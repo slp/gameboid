@@ -100,7 +100,8 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		keyboard = new Keyboard(emulatorView, this);
 		trackball = new Trackball(keyboard, this);
 
-		((VirtualKeypad)findViewById(R.id.keypad)).setGameKeyListener(this);
+		keypad = (VirtualKeypad)findViewById(R.id.keypad);
+		keypad.setGameKeyListener(this);
 
 		// copy preset files
 		copyAsset(new File(datadir, "game_config.txt"));
