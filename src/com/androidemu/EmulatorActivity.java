@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -239,6 +240,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		return keyboard.onKey(null, event.getKeyCode(), event) || super.dispatchKeyEvent(event);
 	}
 	
+	@SuppressLint("NewApi")
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
@@ -247,12 +249,18 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			quickLoad();
 			return true;
 		}
-		if (keyCode == quickSaveKey)
+		else if (keyCode == quickSaveKey)
 		{
 			quickSave();
 			return true;
 		}
-		return super.onKeyDown(keyCode, event);
+		else if (Wrapper.SDK_INT <= 5 && keyCode == KeyEvent.KEYCODE_BACK)
+		{
+			onBackPressed();
+			return true;
+		}
+		else
+			return super.onKeyDown(keyCode, event);
 	}
 	
 	@Override
