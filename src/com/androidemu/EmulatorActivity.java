@@ -236,7 +236,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			}
 		}
 		
-		return keyboard.onKey(null, event.getKeyCode(), event);
+		return keyboard.onKey(null, event.getKeyCode(), event) || super.dispatchKeyEvent(event);
 	}
 	
 	@Override
@@ -252,18 +252,21 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			quickSave();
 			return true;
 		}
-		if (keyCode == KeyEvent.KEYCODE_BACK && currentGame != null)
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		if (currentGame != null)
 		{
 			showDialog(DIALOG_QUIT_GAME);
-			return true;
 		}
-		return super.onKeyDown(keyCode, event);
 	}
 	
 	@Override
 	public boolean onSearchRequested()
 	{
-		// not welcome here
 		return false;
 	}
 
