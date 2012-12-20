@@ -81,7 +81,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		super.onCreate(savedInstanceState);
 
 		Wrapper.setFullScreen(getWindow());
-		
+
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		File datadir = getDir("data", MODE_PRIVATE);
@@ -91,17 +91,17 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			return;
 		}
 		setContentView(R.layout.main);
-		
+
 		emulatorView = (EmulatorView) findViewById(R.id.emulator);
 		placeholder = findViewById(R.id.empty);
-		
+
 		emulatorView.setEmulator(emulator);
 
 		// create physical keyboard and trackball
 		keyboard = new Keyboard(emulatorView, this);
 		trackball = new Trackball(keyboard, this);
 
-		keypad = (VirtualKeypad)findViewById(R.id.keypad);
+		keypad = (VirtualKeypad) findViewById(R.id.keypad);
 		keypad.setGameKeyListener(this);
 
 		// copy preset files
@@ -130,8 +130,9 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		}
 
 		showPlaceholder();
-		
-		startService(new Intent(this, EmulatorService.class).setAction(EmulatorService.ACTION_FOREGROUND));
+
+		startService(new Intent(this, EmulatorService.class)
+				.setAction(EmulatorService.ACTION_FOREGROUND));
 	}
 
 	@Override
@@ -145,7 +146,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			emulator.cleanUp();
 			emulator = null;
 		}
-		
+
 		stopService(new Intent(this, EmulatorService.class));
 	}
 
@@ -211,35 +212,27 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		}
 	}
 
+	private int lastResortShortcut = KeyEvent.KEYCODE_BACK;
+
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event)
 	{
-		if (Wrapper.KeyEvent_isLongPress(event))
+		if (event.getKeyCode() == lastResortShortcut && Wrapper.KeyEvent_isLongPress(event))
 		{
-			switch (event.getKeyCode())
+			if (isMenuShowing)
 			{
-				case KeyEvent.KEYCODE_MENU:
-					// help those in dire situation due to mapping
-					// MENU to something
-					if (isMenuShowing)
-					{
-						closeOptionsMenu();
-					}
-					else
-					{
-						openOptionsMenu();
-					}
-					return false;
-				case KeyEvent.KEYCODE_HOME:
-					// TODO: long-pressing HOME should result in special(C)
-					// dark magic on crazed tablets
-					return false;
+				closeOptionsMenu();
 			}
+			else
+			{
+				openOptionsMenu();
+			}
+			return false;
 		}
-		
+
 		return keyboard.onKey(null, event.getKeyCode(), event) || super.dispatchKeyEvent(event);
 	}
-	
+
 	@SuppressLint("NewApi")
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
@@ -254,7 +247,8 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			quickSave();
 			return true;
 		}
-		else if (Wrapper.SDK_INT <= 5 && keyCode == KeyEvent.KEYCODE_BACK)
+		else if (Wrapper.SDK_INT <= 5 && keyCode == KeyEvent.KEYCODE_BACK
+				&& event.getRepeatCount() == 0)
 		{
 			onBackPressed();
 			return true;
@@ -262,7 +256,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		else
 			return super.onKeyDown(keyCode, event);
 	}
-	
+
 	@Override
 	public void onBackPressed()
 	{
@@ -271,7 +265,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			showDialog(DIALOG_QUIT_GAME);
 		}
 	}
-	
+
 	@Override
 	public boolean onSearchRequested()
 	{
@@ -532,19 +526,19 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 
 		resumeEmulator();
 	}
-	
+
 	private void showPlaceholder()
 	{
 		emulatorView.setVisibility(View.INVISIBLE);
 		placeholder.setVisibility(View.VISIBLE);
 	}
-	
+
 	private void hidePlaceholder()
 	{
 		placeholder.setVisibility(View.GONE);
 		emulatorView.setVisibility(View.VISIBLE);
 	}
-	
+
 	private Dialog createLoadStateDialog()
 	{
 		DialogInterface.OnClickListener l = new DialogInterface.OnClickListener()
@@ -686,7 +680,8 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		Intent intent = new Intent(this, FileChooser.class);
 		intent.putExtra(FileChooser.EXTRA_TITLE,
 				getResources().getString(R.string.title_select_rom));
-		intent.setData(lastPickedGame == null ? null : Uri.fromFile(new File(lastPickedGame)));
+		intent.setData(lastPickedGame == null ? null : Uri.fromFile(new File(
+				lastPickedGame)));
 		intent.putExtra(FileChooser.EXTRA_FILTERS,
 				new String[] { ".gba", ".bin", ".zip" });
 		startActivityForResult(intent, REQUEST_BROWSE_ROM);
