@@ -56,14 +56,4 @@
 				android:summary="@string/enable_trackball_summary"/>
 	</PreferenceCategory>
 
-	<PreferenceCategory android:title="@string/about">
-		<PreferenceScreen android:key="appAbout"
-				android:title="@string/app_about">
-		</PreferenceScreen>
-
-		<PreferenceScreen android:key="searchRoms"
-				android:title="@string/search_roms">
-		</PreferenceScreen>
-	</PreferenceCategory>
-
 </PreferenceScreen>

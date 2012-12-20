@@ -26,9 +26,6 @@ import com.androidemu.gba.input.Keycodes;
 public class GamePreferences extends PreferenceActivity implements
 		Preference.OnPreferenceChangeListener
 {
-
-	private static final String MARKET_SEARCH_URI = "http://market.android.com/search?q=pname:";
-
 	public static final int[] gameKeys = { Keycodes.GAMEPAD_UP, Keycodes.GAMEPAD_DOWN,
 			Keycodes.GAMEPAD_LEFT, Keycodes.GAMEPAD_RIGHT, Keycodes.GAMEPAD_UP_LEFT,
 			Keycodes.GAMEPAD_UP_RIGHT, Keycodes.GAMEPAD_DOWN_LEFT,
@@ -114,15 +111,6 @@ public class GamePreferences extends PreferenceActivity implements
 			pref.setDefaultValue(defaultKeys[i]);
 			group.addPreference(pref);
 		}
-
-		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_SEARCH_URI
-				+ getPackageName()));
-		findPreference("appAbout").setIntent(intent);
-
-		intent = new Intent(Intent.ACTION_WEB_SEARCH);
-		intent.putExtra(SearchManager.QUERY,
-				getResources().getString(R.string.search_roms_keyword));
-		findPreference("searchRoms").setIntent(intent);
 
 		setListSummary("scalingMode", "stretch");
 	}
