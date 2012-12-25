@@ -128,6 +128,11 @@ public class VirtualKeypad extends View
 		super.onWindowFocusChanged(hasWindowFocus);
 		
 		reset();
+		
+		if (isShown())
+		{
+			resize(getWidth(), getHeight());
+		}
 	}
 	
 	@Override

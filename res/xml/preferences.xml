@@ -50,6 +50,66 @@
 		<CheckBoxPreference android:key="enableVirtualKeypad"
 				android:title="@string/enable_virtual_keypad"
 				android:summary="@string/enable_virtual_keypad_summary"/>
+		
+		<PreferenceScreen android:title="@string/vkeypad_settings"
+				android:summary="@string/vkeypad_settings_summary"
+				android:dependency="enableVirtualKeypad">
+
+			<CheckBoxPreference android:key="enableVibrator"
+					android:title="@string/enable_vibrator"
+					android:defaultValue="true"/>
+
+			<CheckBoxPreference android:key="dpad4Way"
+					android:title="@string/dpad_4way"/>
+
+			<com.androidemu.SeekBarPreference
+					android:key="dpadDeadZone"
+					android:title="@string/dpad_deadzone"
+					androidemu:maxValue="4"
+					android:defaultValue="2"/>
+
+			<PreferenceCategory android:title="@string/two_buttons_press">
+				<CheckBoxPreference android:key="inBetweenPress"
+						android:title="@string/in_between_press"
+						android:summary="@string/in_between_press_summary"/>
+
+				<CheckBoxPreference android:key="pointSizePress"
+						android:title="@string/point_size_press"
+						android:summary="@string/point_size_press_summary"/>
+
+				<com.androidemu.SeekBarPreference
+						android:key="pointSizePressThreshold"
+						android:title="@string/point_size_press_threshold"
+						android:dependency="pointSizePress"
+						androidemu:maxValue="10"
+						android:defaultValue="7"/>
+			</PreferenceCategory>
+
+			<PreferenceCategory android:title="@string/appearance">
+				<ListPreference android:key="vkeypadSize"
+						android:title="@string/vkeypad_size"
+						android:entries="@array/vkeypad_size_entries"
+						android:entryValues="@array/vkeypad_size_entryvalues"
+						android:defaultValue="medium"/>
+
+				<com.androidemu.SeekBarPreference
+						android:key="vkeypadTransparency"
+						android:title="@string/vkeypad_transparency"
+						android:defaultValue="50"/>
+			</PreferenceCategory>
+			
+			<ListPreference android:key="vkeypadLayout"
+					android:title="@string/vkeypad_layout"
+					android:entries="@array/vkeypad_layout_entries"
+					android:entryValues="@array/vkeypad_layout_entryvalues"
+					android:defaultValue="top_bottom"/>
+
+			<com.androidemu.SeekBarPreference
+					android:key="layoutMargin"
+					android:title="@string/layout_margin"
+					androidemu:maxValue="5"
+					android:defaultValue="2"/>
+		</PreferenceScreen>
 
 		<CheckBoxPreference android:key="enableTrackball"
 				android:title="@string/enable_trackball"
