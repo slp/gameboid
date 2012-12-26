@@ -3,6 +3,7 @@ package com.androidemu.gba;
 import android.content.Context;
 
 import android.graphics.Canvas;
+import android.graphics.PixelFormat;
 
 import android.util.AttributeSet;
 import android.util.Log;
@@ -29,6 +30,7 @@ public class EmulatorView extends SurfaceView implements SurfaceHolder.Callback
 		super(context, attrs);
 
 		final SurfaceHolder holder = getHolder();
+		holder.setFormat(PixelFormat.RGB_565);
 		holder.setFixedSize(Emulator.VIDEO_W, Emulator.VIDEO_H);
 		holder.setKeepScreenOn(true);
 		holder.addCallback(this);
