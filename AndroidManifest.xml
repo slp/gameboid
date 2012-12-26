@@ -10,7 +10,8 @@
 	<uses-permission android:name="android.permission.VIBRATE" />
 
 	<application android:label="@string/app_label" android:hardwareAccelerated="true"
-			android:icon="@drawable/app_icon" android:allowBackup="true">
+			android:icon="@drawable/app_icon" android:allowBackup="true"
+			android:theme="@style/emuTheme">
 
 		<activity android:name="com.androidemu.EmulatorActivity"
 		    android:process=":emulator"
