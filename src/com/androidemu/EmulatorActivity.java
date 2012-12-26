@@ -219,15 +219,8 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	{
 		if (event.getKeyCode() == lastResortShortcut && Wrapper.KeyEvent_isLongPress(event))
 		{
-			if (isMenuShowing)
-			{
-				closeOptionsMenu();
-			}
-			else
-			{
-				openOptionsMenu();
-			}
-			return false;
+			openOptionsMenu();
+			return true;
 		}
 
 		return keyboard.onKey(null, event.getKeyCode(), event) || super.dispatchKeyEvent(event);
