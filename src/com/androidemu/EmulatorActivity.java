@@ -43,7 +43,9 @@ import com.androidemu.gba.input.Keycodes;
 import com.androidemu.gba.input.VirtualKeypad;
 import com.androidemu.gba.input.Trackball;
 
+import com.androidemu.wrapper.SystemUiHider.OnVisibilityChangeListener;
 import com.androidemu.wrapper.Wrapper;
+import com.androidemu.wrapper.SystemUiHider;
 
 public class EmulatorActivity extends Activity implements GameKeyListener,
 		DialogInterface.OnCancelListener
@@ -75,6 +77,8 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	private boolean isMenuShowing;
 	private int quickLoadKey;
 	private int quickSaveKey;
+	
+	private SystemUiHider uiHider;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -132,6 +136,18 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 					quickLoad();
 			}
 		}
+		
+		uiHider = SystemUiHider.getInstance(this, emulatorView, 0);
+		uiHider.setup();
+		uiHider.setOnVisibilityChangeListener(new OnVisibilityChangeListener()
+		{
+			@Override
+			public void onVisibilityChange(boolean visible)
+			{
+				if (visible)
+					delayedHide();
+			}
+		});
 
 		showPlaceholder();
 
@@ -165,7 +181,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	protected void onResume()
 	{
 		super.onResume();
-		Wrapper.enterFullScreen(this);
+		uiHider.hide();
 		resumeEmulator();
 	}
 
@@ -222,16 +238,10 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event)
 	{
-		if (event.getKeyCode() == lastResortShortcut && Wrapper.KeyEvent_isLongPress(event))
+		if (Wrapper.SDK_INT < 11 && event.getKeyCode() == lastResortShortcut
+				&& Wrapper.KeyEvent_isLongPress(event))
 		{
-			if (Wrapper.SDK_INT < 11)
-			{
-				openOptionsMenu();
-			}
-			else
-			{
-				leaveFullScreen();
-			}
+			openOptionsMenu();
 			return true;
 		}
 
@@ -728,13 +738,12 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		@Override
 		public void run()
 		{
-			Wrapper.enterFullScreen(EmulatorActivity.this);
+			uiHider.hide();
 		}
 	};
-	
-	private void leaveFullScreen()
+
+	private void delayedHide()
 	{
-		Wrapper.leaveFullScreen(EmulatorActivity.this);
 		mHideHandler.removeCallbacks(mHideRunnable);
 		mHideHandler.postDelayed(mHideRunnable, 3000);
 	}
