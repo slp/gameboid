@@ -19,6 +19,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 
 import android.os.Bundle;
+import android.os.Handler;
 
 import android.preference.PreferenceManager;
 
@@ -26,7 +27,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
 
 import android.widget.Toast;
 
@@ -80,8 +81,11 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	{
 		super.onCreate(savedInstanceState);
 
-		Wrapper.setFullScreen(getWindow());
-
+		if (Wrapper.SDK_INT < 11)
+		{
+			getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		}
+		
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		File datadir = getDir("data", MODE_PRIVATE);
@@ -161,6 +165,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	protected void onResume()
 	{
 		super.onResume();
+		Wrapper.enterFullScreen(this);
 		resumeEmulator();
 	}
 
@@ -196,7 +201,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		}
 		return super.onCreateDialog(id);
 	}
-
+	
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog)
 	{
@@ -219,7 +224,14 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	{
 		if (event.getKeyCode() == lastResortShortcut && Wrapper.KeyEvent_isLongPress(event))
 		{
-			openOptionsMenu();
+			if (Wrapper.SDK_INT < 11)
+			{
+				openOptionsMenu();
+			}
+			else
+			{
+				leaveFullScreen();
+			}
 			return true;
 		}
 
@@ -708,5 +720,22 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		if (i >= 0) name = name.substring(0, i);
 		name += ".ss" + slot;
 		return name;
+	}
+	
+	Handler mHideHandler = new Handler();
+	Runnable mHideRunnable = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			Wrapper.enterFullScreen(EmulatorActivity.this);
+		}
+	};
+	
+	private void leaveFullScreen()
+	{
+		Wrapper.leaveFullScreen(EmulatorActivity.this);
+		mHideHandler.removeCallbacks(mHideRunnable);
+		mHideHandler.postDelayed(mHideRunnable, 3000);
 	}
 }
