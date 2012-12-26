@@ -47,7 +47,7 @@ public class EmulatorView extends SurfaceView implements SurfaceHolder.Callback
 		if (scalingMode != mode)
 		{
 			scalingMode = mode;
-			requestLayout();
+			updateSurfaceSize();
 		}
 	}
 
