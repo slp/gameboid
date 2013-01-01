@@ -1,27 +1,18 @@
 package com.androidemu.gba;
 
-import android.app.SearchManager;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-
-import android.net.Uri;
-
 import android.os.Bundle;
-
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
-
 import android.view.KeyEvent;
 
 import com.androidemu.CommonPreferences;
 import com.androidemu.GameKeyPreference;
-
 import com.androidemu.gba.input.Keycodes;
 
 public class GamePreferences extends CommonPreferences implements
@@ -81,26 +72,14 @@ public class GamePreferences extends CommonPreferences implements
 	{
 		return !isKeyboardQwerty(context);
 	}
-	
-	private static boolean getDefaultTrackballEnabled(Context context)
-	{
-		return (context.getResources().getConfiguration().navigation == Configuration.NAVIGATION_TRACKBALL);
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 
-		setTitle(R.string.settings_title);
 		addPreferencesFromResource(R.xml.preferences);
-
-		findPreference("enableTrackball").setEnabled(
-				getDefaultTrackballEnabled(this));
 		
-		findPreference("enableVirtualKeypad").setDefaultValue(
-				getDefaultVirtualKeypadEnabled(this));
-
 		PreferenceGroup group = (PreferenceGroup) findPreference("gameKeyBindings");
 
 		int[] defaultKeys = getDefaultKeys(this);

@@ -22,7 +22,8 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="GamePreferences" android:process=":emulator"/>
+		<activity android:name="GamePreferences" android:process=":emulator"
+		    android:label="@string/settings_title"/>
 		
 		<!-- common components - will be omitted after manifest merging support -->
 		<activity android:name="com.androidemu.FileChooser" />

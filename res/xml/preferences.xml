@@ -49,7 +49,10 @@
 
 		<CheckBoxPreference android:key="enableVirtualKeypad"
 				android:title="@string/enable_virtual_keypad"
-				android:summary="@string/enable_virtual_keypad_summary"/>
+				android:summary="@string/enable_virtual_keypad_summary"
+				android:enabled="@bool/def_hasTouch"
+				android:selectable="@bool/def_hasTouch"
+				android:defaultValue="@bool/def_useTouch"/>
 		
 		<PreferenceScreen android:title="@string/vkeypad_settings"
 				android:summary="@string/vkeypad_settings_summary"
@@ -115,7 +118,9 @@
 
 		<CheckBoxPreference android:key="enableTrackball"
 				android:title="@string/enable_trackball"
-				android:summary="@string/enable_trackball_summary"/>
+				android:summary="@string/enable_trackball_summary"
+				android:enabled="@bool/def_hasTrackball"
+				android:selectable="@bool/def_hasTrackball"/>
 	</PreferenceCategory>
 
 </PreferenceScreen>
