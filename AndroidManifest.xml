@@ -23,7 +23,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="GamePreferences" />
+		<activity android:name="GamePreferences" android:process=":emulator"/>
 		
 		<!-- common components - will be omitted after manifest merging support -->
 		<activity android:name="com.androidemu.FileChooser" />
