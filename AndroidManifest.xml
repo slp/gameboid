@@ -26,6 +26,7 @@
 		
 		<!-- common components - will be omitted after manifest merging support -->
 		<activity android:name="com.androidemu.FileChooser" />
+		<activity android:name="com.androidemu.HelpActivity" />
 		<service android:name="com.androidemu.EmulatorService" android:process=":emulator"/>
 	</application>
 </manifest>
