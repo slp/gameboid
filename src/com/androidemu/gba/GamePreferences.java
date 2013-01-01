@@ -19,11 +19,12 @@ import android.preference.PreferenceManager;
 
 import android.view.KeyEvent;
 
+import com.androidemu.CommonPreferences;
 import com.androidemu.GameKeyPreference;
 
 import com.androidemu.gba.input.Keycodes;
 
-public class GamePreferences extends PreferenceActivity implements
+public class GamePreferences extends CommonPreferences implements
 		Preference.OnPreferenceChangeListener
 {
 	public static final int[] gameKeys = { Keycodes.GAMEPAD_UP, Keycodes.GAMEPAD_DOWN,

@@ -211,6 +211,20 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event)
 	{
+		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
+				&& Wrapper.KeyEvent_isLongPress(event))
+		{
+			if (Wrapper.SDK_INT < 11)
+			{
+				openOptionsMenu();
+			}
+			else
+			{
+				uiHider.show();
+			}
+			return true;
+		}
+		
 		return keyboard.onKey(null, event.getKeyCode(), event) || super.dispatchKeyEvent(event);
 	}
 
