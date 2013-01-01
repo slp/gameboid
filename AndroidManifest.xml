@@ -4,13 +4,14 @@
 		android:versionName="1.3.2"
 		android:installLocation="preferExternal">
 
-	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="10"/>
+	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="17"/>
 
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.VIBRATE" />
 
 	<application android:label="@string/app_label" android:hardwareAccelerated="true"
-			android:icon="@drawable/app_icon" android:allowBackup="true">
+			android:icon="@drawable/app_icon" android:allowBackup="true"
+			android:theme="@style/emuTheme">
 
 		<activity android:name="com.androidemu.EmulatorActivity"
 		    android:process=":emulator"
@@ -21,7 +22,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name="GamePreferences" />
+		<activity android:name="GamePreferences" android:process=":emulator"/>
 		
 		<!-- common components - will be omitted after manifest merging support -->
 		<activity android:name="com.androidemu.FileChooser" />

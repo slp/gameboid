@@ -19,6 +19,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 
 import android.os.Bundle;
+import android.os.Handler;
 
 import android.preference.PreferenceManager;
 
@@ -26,7 +27,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
 
 import android.widget.Toast;
 
@@ -42,7 +43,9 @@ import com.androidemu.gba.input.Keycodes;
 import com.androidemu.gba.input.VirtualKeypad;
 import com.androidemu.gba.input.Trackball;
 
+import com.androidemu.wrapper.SystemUiHider.OnVisibilityChangeListener;
 import com.androidemu.wrapper.Wrapper;
+import com.androidemu.wrapper.SystemUiHider;
 
 public class EmulatorActivity extends Activity implements GameKeyListener,
 		DialogInterface.OnCancelListener
@@ -74,14 +77,19 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	private boolean isMenuShowing;
 	private int quickLoadKey;
 	private int quickSaveKey;
+	
+	private SystemUiHider uiHider;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 
-		Wrapper.setFullScreen(getWindow());
-
+		if (Wrapper.SDK_INT < 11)
+		{
+			getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		}
+		
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		File datadir = getDir("data", MODE_PRIVATE);
@@ -128,6 +136,18 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 					quickLoad();
 			}
 		}
+		
+		uiHider = SystemUiHider.getInstance(this, emulatorView, 0);
+		uiHider.setup();
+		uiHider.setOnVisibilityChangeListener(new OnVisibilityChangeListener()
+		{
+			@Override
+			public void onVisibilityChange(boolean visible)
+			{
+				if (visible)
+					delayedHide();
+			}
+		});
 
 		showPlaceholder();
 
@@ -161,6 +181,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	protected void onResume()
 	{
 		super.onResume();
+		uiHider.hide();
 		resumeEmulator();
 	}
 
@@ -196,7 +217,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		}
 		return super.onCreateDialog(id);
 	}
-
+	
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog)
 	{
@@ -217,17 +238,11 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event)
 	{
-		if (event.getKeyCode() == lastResortShortcut && Wrapper.KeyEvent_isLongPress(event))
+		if (Wrapper.SDK_INT < 11 && event.getKeyCode() == lastResortShortcut
+				&& Wrapper.KeyEvent_isLongPress(event))
 		{
-			if (isMenuShowing)
-			{
-				closeOptionsMenu();
-			}
-			else
-			{
-				openOptionsMenu();
-			}
-			return false;
+			openOptionsMenu();
+			return true;
 		}
 
 		return keyboard.onKey(null, event.getKeyCode(), event) || super.dispatchKeyEvent(event);
@@ -715,5 +730,21 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		if (i >= 0) name = name.substring(0, i);
 		name += ".ss" + slot;
 		return name;
+	}
+	
+	Handler mHideHandler = new Handler();
+	Runnable mHideRunnable = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			uiHider.hide();
+		}
+	};
+
+	private void delayedHide()
+	{
+		mHideHandler.removeCallbacks(mHideRunnable);
+		mHideHandler.postDelayed(mHideRunnable, 3000);
 	}
 }

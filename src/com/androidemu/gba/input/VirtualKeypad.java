@@ -110,7 +110,7 @@ public class VirtualKeypad extends View
 	@Override
 	public void onDraw(Canvas canvas)
 	{
-		paint.setAlpha(transparency * 2 + 30);
+		paint.setAlpha(transparency);
 		
 		for (Control c : controls)
 			c.draw(canvas, paint);

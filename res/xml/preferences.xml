@@ -95,7 +95,9 @@
 				<com.androidemu.SeekBarPreference
 						android:key="vkeypadTransparency"
 						android:title="@string/vkeypad_transparency"
-						android:defaultValue="50"/>
+						android:defaultValue="50"
+						androidemu:minValue="0"
+						androidemu:maxValue="255"/>
 			</PreferenceCategory>
 			
 			<ListPreference android:key="vkeypadLayout"
