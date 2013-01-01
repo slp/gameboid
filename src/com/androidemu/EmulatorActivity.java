@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
@@ -19,8 +18,6 @@ import android.media.AudioManager;
 import android.net.Uri;
 
 import android.os.Bundle;
-import android.os.Handler;
-
 import android.preference.PreferenceManager;
 
 import android.view.KeyEvent;
@@ -43,11 +40,9 @@ import com.androidemu.gba.input.Keycodes;
 import com.androidemu.gba.input.VirtualKeypad;
 import com.androidemu.gba.input.Trackball;
 
-import com.androidemu.wrapper.SystemUiHider.OnVisibilityChangeListener;
 import com.androidemu.wrapper.Wrapper;
-import com.androidemu.wrapper.SystemUiHider;
 
-public class EmulatorActivity extends Activity implements GameKeyListener,
+public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		DialogInterface.OnCancelListener
 {
 	private static final int REQUEST_BROWSE_ROM = 1;
@@ -77,8 +72,6 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	private boolean isMenuShowing;
 	private int quickLoadKey;
 	private int quickSaveKey;
-	
-	private SystemUiHider uiHider;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -137,22 +130,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			}
 		}
 		
-		uiHider = SystemUiHider.getInstance(this, emulatorView, 0);
-		uiHider.setup();
-		uiHider.setOnVisibilityChangeListener(new OnVisibilityChangeListener()
-		{
-			@Override
-			public void onVisibilityChange(boolean visible)
-			{
-				if (visible)
-					delayedHide();
-			}
-		});
-
 		showPlaceholder();
-
-		startService(new Intent(this, EmulatorService.class)
-				.setAction(EmulatorService.ACTION_FOREGROUND));
 	}
 
 	@Override
@@ -166,8 +144,6 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			emulator.cleanUp();
 			emulator = null;
 		}
-
-		stopService(new Intent(this, EmulatorService.class));
 	}
 
 	@Override
@@ -181,7 +157,6 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 	protected void onResume()
 	{
 		super.onResume();
-		uiHider.hide();
 		resumeEmulator();
 	}
 
@@ -233,18 +208,9 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		}
 	}
 
-	private int lastResortShortcut = KeyEvent.KEYCODE_BACK;
-
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event)
 	{
-		if (Wrapper.SDK_INT < 11 && event.getKeyCode() == lastResortShortcut
-				&& Wrapper.KeyEvent_isLongPress(event))
-		{
-			openOptionsMenu();
-			return true;
-		}
-
 		return keyboard.onKey(null, event.getKeyCode(), event) || super.dispatchKeyEvent(event);
 	}
 
@@ -262,12 +228,6 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 			quickSave();
 			return true;
 		}
-		else if (Wrapper.SDK_INT <= 5 && keyCode == KeyEvent.KEYCODE_BACK
-				&& event.getRepeatCount() == 0)
-		{
-			onBackPressed();
-			return true;
-		}
 		else
 			return super.onKeyDown(keyCode, event);
 	}
@@ -279,12 +239,6 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		{
 			showDialog(DIALOG_QUIT_GAME);
 		}
-	}
-
-	@Override
-	public boolean onSearchRequested()
-	{
-		return false;
 	}
 
 	@Override
@@ -676,7 +630,7 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		}
 		currentGame = fname;
 		hidePlaceholder();
-		emulatorView.setActualSize(emulator.VIDEO_W, emulator.VIDEO_H);
+		emulatorView.setActualSize(Emulator.VIDEO_W, Emulator.VIDEO_H);
 		return true;
 	}
 
@@ -730,21 +684,5 @@ public class EmulatorActivity extends Activity implements GameKeyListener,
 		if (i >= 0) name = name.substring(0, i);
 		name += ".ss" + slot;
 		return name;
-	}
-	
-	Handler mHideHandler = new Handler();
-	Runnable mHideRunnable = new Runnable()
-	{
-		@Override
-		public void run()
-		{
-			uiHider.hide();
-		}
-	};
-
-	private void delayedHide()
-	{
-		mHideHandler.removeCallbacks(mHideRunnable);
-		mHideHandler.postDelayed(mHideRunnable, 3000);
 	}
 }
