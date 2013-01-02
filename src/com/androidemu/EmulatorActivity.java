@@ -435,17 +435,15 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		pauseEmulator();
 
 		emulator.setOption("autoFrameSkip", cfg.getBoolean("autoFrameSkip", true));
-		emulator.setOption("maxFrameSkips",
-				Integer.toString(cfg.getInt("maxFrameSkips", 2)));
-		emulator.setOption("soundEnabled", cfg.getBoolean("soundEnabled", true));
+		emulator.setOption("maxFrameSkips", Integer.toString(cfg.getInt("maxFrameSkips", 2)));
+		
+		emulator.setOption("soundEnabled", cfg.getBoolean("soundEnabled", res.getBoolean(R.bool.def_soundEnabled)));
 
 		trackball.setEnabled(cfg.getBoolean("enableTrackball", res.getBoolean(R.bool.def_hasTrackball)));
 		
-		keypad.setVisibility(cfg.getBoolean("enableVirtualKeypad",
-				res.getBoolean(R.bool.def_useTouch)) ? View.VISIBLE : View.GONE);
+		keypad.setVisibility(cfg.getBoolean("enableVirtualKeypad", res.getBoolean(R.bool.def_useTouch)) ? View.VISIBLE : View.GONE);
 
-		emulatorView.setScalingMode(getScalingMode(cfg.getString("scalingMode",
-				res.getString(R.string.def_scalingMode))));
+		emulatorView.setScalingMode(getScalingMode(cfg.getString("scalingMode", res.getString(R.string.def_scalingMode))));
 
 		// key bindings
 		final int[] gameKeys = GamePreferences.gameKeys;
