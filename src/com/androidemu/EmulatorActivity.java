@@ -252,7 +252,14 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		if (!isMenuShowing)
 		{
 			isMenuShowing = true;
-			pauseEmulator();
+			
+			// On Honeycomb and newer this function is called
+			// during some ActionBar manipulation, so no need to
+			// pause
+			if (Wrapper.SDK_INT < 11)
+			{
+				pauseEmulator();
+			}
 		}
 		
 		return true;
@@ -403,6 +410,8 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 
 	private void resumeEmulator()
 	{
+		debug("Resume requested");
+		
 		if (resumeRequested++ == 0)
 		{
 			keyboard.reset();
@@ -410,13 +419,20 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 			trackball.reset();
 			onGameKeyChanged();
 
+			debug("Resuming");
 			emulator.resume();
 		}
 	}
 
 	private void pauseEmulator()
 	{
-		if (--resumeRequested == 0) emulator.pause();
+		debug("Pause requested");
+		
+		if (--resumeRequested == 0)
+		{
+			debug("Pausing");
+			emulator.pause();
+		}
 	}
 
 	private static int getScalingMode(String mode)
@@ -600,7 +616,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		}
 		currentGame = fname;
 		hidePlaceholder();
-		emulatorView.setActualSize(Emulator.VIDEO_W, Emulator.VIDEO_H);
 		
 		Wrapper.Activity_invalidateOptionsMenu(this);
 		return true;
