@@ -1,43 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
-        android:id="@+id/menu_open"
-        android:alphabeticShortcut="o"
-        android:icon="@drawable/ic_menu_open"
-        android:title="@string/open"
-        android:showAsAction="ifRoom|withText"/>
-
     <group android:id="@+id/GAME_MENU" >
         <item
             android:id="@+id/menu_load_state"
             android:alphabeticShortcut="l"
             android:icon="@android:drawable/ic_menu_set_as"
-            android:title="@string/load_state"
-            android:showAsAction="ifRoom|withText"/>
+            android:showAsAction="ifRoom|withText"
+            android:title="@string/load_state"/>
         <item
             android:id="@+id/menu_save_state"
             android:alphabeticShortcut="t"
             android:icon="@android:drawable/ic_menu_save"
-            android:title="@string/save_state"
-            android:showAsAction="ifRoom|withText"/>
-        
+            android:showAsAction="ifRoom|withText"
+            android:title="@string/save_state"/>
+    </group>
+
+    <item
+        android:id="@+id/menu_open"
+        android:alphabeticShortcut="o"
+        android:icon="@drawable/ic_menu_open"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/open"/>
+
+    <group android:id="@+id/GAME_MENU" >
         <item
             android:id="@+id/menu_reset"
             android:icon="@android:drawable/ic_menu_revert"
-            android:title="@string/reset"
-            android:showAsAction="never"/>
+            android:showAsAction="never"
+            android:title="@string/reset"/>
         <item
             android:id="@+id/menu_close"
-            android:title="@string/close"
-            android:showAsAction="never"/>
+            android:showAsAction="never"
+            android:title="@string/close"/>
     </group>
 
     <item
         android:id="@+id/menu_quit"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
-        android:title="@string/quit"
         android:orderInCategory="100"
-        android:showAsAction="never"/>
+        android:showAsAction="never"
+        android:title="@string/quit"/>
 
 </menu>
