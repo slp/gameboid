@@ -3,6 +3,7 @@ package com.androidemu;
 import java.io.File;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -244,6 +245,8 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
+		menu.setGroupVisible(R.id.GAME_MENU, currentGame != null);
+		
 		super.onPrepareOptionsMenu(menu);
 
 		if (!isMenuShowing)
@@ -251,10 +254,10 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 			isMenuShowing = true;
 			pauseEmulator();
 		}
-		menu.setGroupVisible(R.id.GAME_MENU, currentGame != null);
+		
 		return true;
 	}
-
+	
 	@Override
 	public void onOptionsMenuClosed(Menu menu)
 	{
@@ -547,7 +550,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 	{
 		if (name != null && emulator.loadBIOS(name))
 		{
-			SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+			SharedPreferences.Editor editor = cfg.edit();
 			editor.putString("bios", name);
 			editor.commit();
 			return true;
@@ -598,6 +601,8 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		currentGame = fname;
 		hidePlaceholder();
 		emulatorView.setActualSize(Emulator.VIDEO_W, Emulator.VIDEO_H);
+		
+		Wrapper.Activity_invalidateOptionsMenu(this);
 		return true;
 	}
 
@@ -609,6 +614,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 			currentGame = null;
 			showPlaceholder();
 		}
+		Wrapper.Activity_invalidateOptionsMenu(this);
 	}
 
 	private void onLoadROM()
