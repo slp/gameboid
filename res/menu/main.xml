@@ -5,7 +5,8 @@
         android:id="@+id/menu_open"
         android:alphabeticShortcut="o"
         android:icon="@drawable/ic_menu_open"
-        android:title="@string/open"/>
+        android:title="@string/open"
+        android:showAsAction="ifRoom|withText"/>
 
     <group android:id="@+id/GAME_MENU" >
         <item
@@ -13,33 +14,30 @@
             android:alphabeticShortcut="l"
             android:icon="@android:drawable/ic_menu_set_as"
             android:title="@string/load_state"
-            android:showAsAction="ifRoom"/>
+            android:showAsAction="ifRoom|withText"/>
         <item
             android:id="@+id/menu_save_state"
             android:alphabeticShortcut="t"
             android:icon="@android:drawable/ic_menu_save"
             android:title="@string/save_state"
-            android:showAsAction="ifRoom"/>
-    </group>
-
-    <item
-        android:id="@+id/menu_settings"
-        android:icon="@android:drawable/ic_menu_preferences"
-        android:title="@string/settings"/>
-
-    <group android:id="@+id/GAME_MENU" >
+            android:showAsAction="ifRoom|withText"/>
+        
         <item
             android:id="@+id/menu_reset"
             android:icon="@android:drawable/ic_menu_revert"
-            android:title="@string/reset"/>
+            android:title="@string/reset"
+            android:showAsAction="never"/>
         <item
             android:id="@+id/menu_close"
-            android:title="@string/close"/>
+            android:title="@string/close"
+            android:showAsAction="never"/>
     </group>
 
     <item
         android:id="@+id/menu_quit"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
-        android:title="@string/quit"/>
+        android:title="@string/quit"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
 
 </menu>

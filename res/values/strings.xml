@@ -15,7 +15,6 @@
 	<string name="no_files_in_folder">No files in this folder.</string>
 	<string name="invalid_dir">Invalid directory</string>
 
-	<string name="no_rom">No ROM loaded.\nPress <b>Menu</b> for more options.</string>
 	<string name="load_rom_failed">Load ROM failed. Please try another file.</string>
 	<string name="quit_game_title">Quit Options</string>
 	<string name="load_state_title">Load State</string>

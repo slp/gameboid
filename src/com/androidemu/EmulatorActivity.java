@@ -1,24 +1,16 @@
 package com.androidemu;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
 import android.media.AudioManager;
 import android.net.Uri;
-
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -106,11 +98,10 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		keypad.setGameKeyListener(this);
 
 		// copy preset files
-		copyAsset(new File(datadir, "game_config.txt"));
+		extractAsset(new File(datadir, "game_config.txt"));
 
 		// load settings
-		SharedPreferences settings = getPreferences(MODE_PRIVATE);
-		lastPickedGame = settings.getString("lastPickedGame", null);
+		lastPickedGame = cfg.getString("lastPickedGame", null);
 		loadGlobalSettings();
 
 		// restore state if any
@@ -118,10 +109,10 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 			currentGame = savedInstanceState.getString("currentGame");
 
 		// load BIOS
-		if (loadBIOS(settings.getString("bios", null)))
+		if (loadBIOS(cfg.getString("bios", null)))
 		{
 			// restore last running game
-			String last = settings.getString("lastRunningGame", null);
+			String last = cfg.getString("lastRunningGame", null);
 			if (last != null)
 			{
 				saveLastRunningGame(null);
@@ -165,7 +156,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 	{
 		super.onStop();
 
-		SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+		SharedPreferences.Editor editor = cfg.edit();
 		editor.putString("lastPickedGame", lastPickedGame);
 		editor.commit();
 	}
@@ -191,21 +182,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 				return createSaveStateDialog();
 		}
 		return super.onCreateDialog(id);
-	}
-	
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog)
-	{
-		super.onPrepareDialog(id, dialog);
-
-		switch (id)
-		{
-			case DIALOG_QUIT_GAME:
-			case DIALOG_LOAD_STATE:
-			case DIALOG_SAVE_STATE:
-				pauseEmulator();
-				break;
-		}
 	}
 
 	@Override
@@ -246,6 +222,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 			return super.onKeyDown(keyCode, event);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onBackPressed()
 	{
@@ -290,6 +267,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -360,7 +338,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 	{
 		int states = 0;
 		states |= keyboard.getKeyStates();
-		if (keypad != null) states |= keypad.getKeyStates();
+		states |= keypad.getKeyStates();
 
 		if ((states & GAMEPAD_DIRECTION) != 0)
 			trackball.reset();
@@ -375,6 +353,23 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		emulator.setKeyStates(states);
 	}
 
+	@SuppressWarnings("deprecation")
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog)
+	{
+		super.onPrepareDialog(id, dialog);
+
+		switch (id)
+		{
+			case DIALOG_QUIT_GAME:
+			case DIALOG_LOAD_STATE:
+			case DIALOG_SAVE_STATE:
+				pauseEmulator();
+				break;
+		}
+	}
+
+	@Override
 	public void onCancel(DialogInterface dialog)
 	{
 		resumeEmulator();
@@ -408,7 +403,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		if (resumeRequested++ == 0)
 		{
 			keyboard.reset();
-			if (keypad != null) keypad.reset();
+			keypad.reset();
 			trackball.reset();
 			onGameKeyChanged();
 
@@ -421,44 +416,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		if (--resumeRequested == 0) emulator.pause();
 	}
 
-	private boolean copyAsset(File file)
-	{
-		if (file.exists()) return true;
-
-		InputStream in = null;
-		OutputStream out = null;
-
-		try
-		{
-			in = getAssets().open(file.getName());
-			out = new FileOutputStream(file);
-
-			byte[] buf = new byte[8192];
-			int len;
-			while ((len = in.read(buf)) > 0)
-				out.write(buf, 0, len);
-
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return false;
-
-		}
-		finally
-		{
-			try
-			{
-				if (out != null) out.close();
-				if (in != null) in.close();
-			}
-			catch (IOException e)
-			{
-			}
-		}
-		return true;
-	}
-
 	private static int getScalingMode(String mode)
 	{
 		if (mode.equals("original")) return EmulatorView.SCALING_ORIGINAL;
@@ -468,7 +425,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 
 	private void saveLastRunningGame(String game)
 	{
-		SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+		SharedPreferences.Editor editor = cfg.edit();
 		editor.putString("lastRunningGame", game);
 		editor.commit();
 	}
@@ -477,20 +434,18 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 	{
 		pauseEmulator();
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-		emulator.setOption("autoFrameSkip", settings.getBoolean("autoFrameSkip", true));
+		emulator.setOption("autoFrameSkip", cfg.getBoolean("autoFrameSkip", true));
 		emulator.setOption("maxFrameSkips",
-				Integer.toString(settings.getInt("maxFrameSkips", 2)));
-		emulator.setOption("soundEnabled", settings.getBoolean("soundEnabled", true));
+				Integer.toString(cfg.getInt("maxFrameSkips", 2)));
+		emulator.setOption("soundEnabled", cfg.getBoolean("soundEnabled", true));
 
-		trackball.setEnabled(settings.getBoolean("enableTrackball", false));
-		if (keypad != null)
-			keypad.setVisibility(settings.getBoolean("enableVirtualKeypad",
-					GamePreferences.getDefaultVirtualKeypadEnabled(this)) ? View.VISIBLE
-					: View.GONE);
+		trackball.setEnabled(cfg.getBoolean("enableTrackball", res.getBoolean(R.bool.def_hasTrackball)));
+		
+		keypad.setVisibility(cfg.getBoolean("enableVirtualKeypad",
+				res.getBoolean(R.bool.def_useTouch)) ? View.VISIBLE : View.GONE);
 
-		emulatorView.setScalingMode(getScalingMode(settings.getString("scalingMode",
-				"stretch")));
+		emulatorView.setScalingMode(getScalingMode(cfg.getString("scalingMode",
+				res.getString(R.string.def_scalingMode))));
 
 		// key bindings
 		final int[] gameKeys = GamePreferences.gameKeys;
@@ -500,12 +455,12 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		keyboard.clearKeyMap();
 		for (int i = 0; i < prefKeys.length; i++)
 		{
-			keyboard.mapKey(gameKeys[i], settings.getInt(prefKeys[i], defaultKeys[i]));
+			keyboard.mapKey(gameKeys[i], cfg.getInt(prefKeys[i], defaultKeys[i]));
 		}
 
 		// shortcut keys
-		quickLoadKey = settings.getInt("quickLoad", 0);
-		quickSaveKey = settings.getInt("quickSave", 0);
+		quickLoadKey = cfg.getInt("quickLoad", 0);
+		quickSaveKey = cfg.getInt("quickSave", 0);
 
 		resumeEmulator();
 	}
