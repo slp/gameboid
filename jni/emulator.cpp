@@ -256,6 +256,8 @@ Emulator_setOption(JNIEnv *env, jobject self, jstring jname, jstring jvalue)
 	} else if (strcmp(name, "soundEnabled") == 0) {
 		global_enable_audio = (strcmp(value, "false") != 0);
 	}
+	else if (strcmp(name, "soundVolume") == 0)
+				media->audioSetVolume(env, atoi(value));
 
 	env->ReleaseStringUTFChars(jname, name);
 	env->ReleaseStringUTFChars(jvalue, value);

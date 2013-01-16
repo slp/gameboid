@@ -364,6 +364,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 		emulator.setOption("maxFrameSkips", cfg.maxFrameSkips);
 		
 		emulator.setOption("soundEnabled", cfg.soundEnabled);
+		emulator.setOption("soundVolume", cfg.soundVolume);
 
 		trackball.setEnabled(cfg.enableTrackball);
 		

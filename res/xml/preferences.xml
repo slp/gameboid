@@ -7,6 +7,12 @@
 		<CheckBoxPreference android:key="soundEnabled"
 				android:title="@string/enable_sound"
 				android:defaultValue="true"/>
+		
+		<com.androidemu.persistent.SeekBarPreference
+					android:key="soundVolume"
+					android:dependency="soundEnabled"
+					android:title="@string/sound_volume"
+					android:defaultValue="100"/>
 	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/video_settings">
