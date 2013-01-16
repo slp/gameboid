@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,14 +31,12 @@ import com.androidemu.gba.input.Trackball;
 
 import com.androidemu.wrapper.Wrapper;
 
-public class EmulatorActivity extends GameActivity implements GameKeyListener,
-		DialogInterface.OnCancelListener
+public class EmulatorActivity extends GameActivity implements GameKeyListener
 {
 	private static final int REQUEST_BROWSE_ROM = 1;
 	private static final int REQUEST_BROWSE_BIOS = 2;
 	private static final int REQUEST_SETTINGS = 3;
 
-	private static final int DIALOG_QUIT_GAME = 1;
 	private static final int DIALOG_LOAD_STATE = 2;
 	private static final int DIALOG_SAVE_STATE = 3;
 
@@ -46,7 +45,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 	private static final int GAMEPAD_DIRECTION = (GAMEPAD_UP_DOWN | GAMEPAD_LEFT_RIGHT);
 
 	private static Emulator emulator;
-	private static int resumeRequested;
 
 	private EmulatorView emulatorView;
 	private View placeholder;
@@ -132,24 +130,9 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 
 		if (isFinishing())
 		{
-			resumeRequested = 0;
 			emulator.cleanUp();
 			emulator = null;
 		}
-	}
-
-	@Override
-	protected void onPause()
-	{
-		super.onPause();
-		pauseEmulator();
-	}
-
-	@Override
-	protected void onResume()
-	{
-		super.onResume();
-		resumeEmulator();
 	}
 
 	@Override
@@ -173,7 +156,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 	{
 		switch (id)
 		{
-			case DIALOG_QUIT_GAME:
+			case DIALOG_EXIT_PROMPT:
 				return createQuitGameDialog();
 			case DIALOG_LOAD_STATE:
 				return createLoadStateDialog();
@@ -227,7 +210,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 	{
 		if (currentGame != null)
 		{
-			showDialog(DIALOG_QUIT_GAME);
+			showDialog(DIALOG_EXIT_PROMPT);
 		}
 	}
 
@@ -245,46 +228,18 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 	{
 		menu.setGroupVisible(R.id.GAME_MENU, currentGame != null);
 		
-		super.onPrepareOptionsMenu(menu);
-
-		if (!isMenuShowing)
-		{
-			isMenuShowing = true;
-			
-			// On Honeycomb and newer this function is called
-			// during some ActionBar manipulation, so no need to
-			// pause
-			if (Wrapper.SDK_INT < 11)
-			{
-				pauseEmulator();
-			}
-		}
-		
-		return true;
-	}
-	
-	@Override
-	public void onOptionsMenuClosed(Menu menu)
-	{
-		super.onOptionsMenuClosed(menu);
-
-		if (isMenuShowing)
-		{
-			isMenuShowing = false;
-			resumeEmulator();
-		}
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		if (isMenuShowing)
+		if (super.onOptionsItemSelected(item))
 		{
-			isMenuShowing = false;
-			resumeEmulator();
+			return true;
 		}
-
+		
 		switch (item.getItemId())
 		{
 			case R.id.menu_open:
@@ -316,12 +271,15 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 				finish();
 				return true;
 		}
-		return super.onOptionsItemSelected(item);
+		
+		return false;
 	}
 
 	@Override
 	protected void onActivityResult(int request, int result, Intent data)
 	{
+		super.onActivityResult(request, result, data);
+		
 		switch (request)
 		{
 			case REQUEST_BROWSE_ROM:
@@ -361,76 +319,25 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		emulator.setKeyStates(states);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	protected void onPrepareDialog(int id, Dialog dialog)
+	protected void resumeGame()
 	{
-		super.onPrepareDialog(id, dialog);
+		super.resumeGame();
 
-		switch (id)
-		{
-			case DIALOG_QUIT_GAME:
-			case DIALOG_LOAD_STATE:
-			case DIALOG_SAVE_STATE:
-				pauseEmulator();
-				break;
-		}
+		keyboard.reset();
+		keypad.reset();
+		trackball.reset();
+		onGameKeyChanged();
+		
+		emulator.resume();
 	}
 
 	@Override
-	public void onCancel(DialogInterface dialog)
+	protected void pauseGame()
 	{
-		resumeEmulator();
-	}
+		super.pauseGame();
 
-	private boolean initEmulator(File datadir)
-	{
-		if (emulator != null) return true;
-
-		// FIXME
-		final String libdir = "/data/data/" + getPackageName() + "/lib";
-		emulator = new Emulator();
-		if (!emulator.initialize(libdir, datadir.getAbsolutePath())) return false;
-
-		if (emuThread == null)
-		{
-			emuThread = new Thread()
-			{
-				public void run()
-				{
-					emulator.run();
-				}
-			};
-			emuThread.start();
-		}
-		return true;
-	}
-
-	private void resumeEmulator()
-	{
-		debug("Resume requested");
-		
-		if (resumeRequested++ == 0)
-		{
-			keyboard.reset();
-			keypad.reset();
-			trackball.reset();
-			onGameKeyChanged();
-
-			debug("Resuming");
-			emulator.resume();
-		}
-	}
-
-	private void pauseEmulator()
-	{
-		debug("Pause requested");
-		
-		if (--resumeRequested == 0)
-		{
-			debug("Pausing");
-			emulator.pause();
-		}
+		emulator.pause();
 	}
 
 	private static int getScalingMode(String mode)
@@ -442,8 +349,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 
 	private void loadGlobalSettings()
 	{
-		pauseEmulator();
-
 		emulator.setOption("autoFrameSkip", cfg.autoFrameSkip);
 		emulator.setOption("maxFrameSkips", cfg.maxFrameSkips);
 		
@@ -467,8 +372,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		// shortcut keys
 		quickLoadKey = cfg.quickLoad;
 		quickSaveKey = cfg.quickSave;
-
-		resumeEmulator();
 	}
 
 	private void showPlaceholder()
@@ -490,12 +393,13 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 			public void onClick(DialogInterface dialog, int which)
 			{
 				loadGameState(which);
-				resumeEmulator();
 			}
 		};
 
-		return new AlertDialog.Builder(this).setTitle(R.string.load_state_title)
-				.setItems(R.array.game_state_slots, l).setOnCancelListener(this).create();
+		return new AlertDialog.Builder(this)
+			.setTitle(R.string.load_state_title)
+			.setItems(R.array.game_state_slots, l)
+			.create();
 	}
 
 	private Dialog createSaveStateDialog()
@@ -505,14 +409,15 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 			public void onClick(DialogInterface dialog, int which)
 			{
 				saveGameState(which);
-				resumeEmulator();
 			}
 		};
 
-		return new AlertDialog.Builder(this).setTitle(R.string.save_state_title)
-				.setItems(R.array.game_state_slots, l).setOnCancelListener(this).create();
+		return new AlertDialog.Builder(this)
+			.setTitle(R.string.save_state_title)
+			.setItems(R.array.game_state_slots, l)
+			.create();
 	}
-
+	
 	private Dialog createQuitGameDialog()
 	{
 		DialogInterface.OnClickListener l = new DialogInterface.OnClickListener()
@@ -522,23 +427,26 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 				switch (which)
 				{
 					case 0:
-						resumeEmulator();
-						onLoadROM();
+						// game is resumed after dismissing
 						break;
 					case 1:
+						onLoadROM();
+						break;
+					case 2:
 						quickSave();
 						cfg.setLastRunningGame(currentGame);
 						// fall through
-					case 2:
+					case 3:
 						finish();
 						break;
 				}
 			}
 		};
 
-		return new AlertDialog.Builder(this).setTitle(R.string.quit_game_title)
-				.setItems(R.array.exit_game_options, l).setOnCancelListener(this)
-				.create();
+		return new AlertDialog.Builder(this)
+			.setTitle(R.string.quit_game_title)
+			.setItems(R.array.exit_game_options, l)
+			.create();
 	}
 
 	private void browseBIOS(String initial)
@@ -603,8 +511,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		}
 		currentGame = fname;
 		hidePlaceholder();
-		
-		Wrapper.Activity_invalidateOptionsMenu(this);
+
 		return true;
 	}
 
@@ -616,7 +523,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 			currentGame = null;
 			showPlaceholder();
 		}
-		Wrapper.Activity_invalidateOptionsMenu(this);
 	}
 
 	private void onLoadROM()
