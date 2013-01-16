@@ -54,7 +54,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 
 	private String currentGame;
 	private String lastPickedGame;
-	private boolean isMenuShowing;
 	private int quickLoadKey;
 	private int quickSaveKey;
 	
@@ -95,25 +94,35 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 		// load settings
 		lastPickedGame = cfg.lastPickedGame;
 		loadGlobalSettings();
+		
+		currentGame = cfg.lastRunningGame;
 
 		// restore state if any
 		if (savedInstanceState != null)
-			currentGame = savedInstanceState.getString("currentGame");
-
-		// load BIOS
-		if (loadBIOS(cfg.bios))
 		{
-			// restore last running game
-			String last = cfg.lastRunningGame;
-			if (last != null)
-			{
-				cfg.setLastRunningGame(null);
-				if (new File(getGameStateFile(last, 0)).exists() && loadROM(last, false))
-					quickLoad();
-			}
+			currentGame = savedInstanceState.getString("currentGame");
 		}
 		
+		// TODO: find way to set view as default for sure 
 		showPlaceholder();
+		
+		if (currentGame != null)
+		{
+			debug("Last running game: " + currentGame);
+
+			if (loadBIOS(cfg.bios))
+			{
+				String last = currentGame;
+				
+				cfg.setLastRunningGame(null);
+				if (new File(getGameStateFile(last, 0)).exists() && loadROM(last, false))
+				{
+					quickLoad();
+				}
+				
+				hidePlaceholder();
+			}
+		}
 	}
 
 	protected void initResources()
@@ -134,18 +143,12 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 			emulator = null;
 		}
 	}
-
-	@Override
-	protected void onStop()
-	{
-		super.onStop();
-
-		cfg.setLastPickedGame(lastPickedGame);
-	}
-
+	
 	@Override
 	protected void onSaveInstanceState(Bundle outState)
 	{
+		debug("onSaveInstanceState");
+		
 		super.onSaveInstanceState(outState);
 
 		outState.putString("currentGame", currentGame);
@@ -286,6 +289,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 				if (result == RESULT_OK)
 				{
 					lastPickedGame = data.getData().getPath();
+					cfg.setLastPickedGame(lastPickedGame);
 					loadROM(lastPickedGame);
 				}
 				break;
@@ -434,7 +438,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 						break;
 					case 2:
 						quickSave();
-						cfg.setLastRunningGame(currentGame);
 						// fall through
 					case 3:
 						finish();
@@ -510,6 +513,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 			return false;
 		}
 		currentGame = fname;
+		cfg.setLastRunningGame(currentGame);
 		hidePlaceholder();
 
 		return true;
