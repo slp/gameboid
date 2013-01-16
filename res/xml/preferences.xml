@@ -20,7 +20,7 @@
 				android:title="@string/auto_frame_skip"
 				android:defaultValue="true"/>
 
-		<com.androidemu.SeekBarPreference
+		<com.androidemu.persistent.SeekBarPreference
 				android:key="maxFrameSkips"
 				android:title="@string/max_frame_skips"
 				android:summary="@string/max_frame_skips_summary"
@@ -36,11 +36,11 @@
 					android:title="@string/game_key_bindings"/>
 
 			<PreferenceCategory android:title="@string/shortcut_keys">
-				<com.androidemu.GameKeyPreference
+				<com.androidemu.persistent.GameKeyPreference
 						android:key="quickLoad"
 						android:title="@string/quick_load"
 						android:defaultValue="0"/>
-				<com.androidemu.GameKeyPreference
+				<com.androidemu.persistent.GameKeyPreference
 						android:key="quickSave"
 						android:title="@string/quick_save"
 						android:defaultValue="0"/>
@@ -65,7 +65,7 @@
 			<CheckBoxPreference android:key="dpad4Way"
 					android:title="@string/dpad_4way"/>
 
-			<com.androidemu.SeekBarPreference
+			<com.androidemu.persistent.SeekBarPreference
 					android:key="dpadDeadZone"
 					android:title="@string/dpad_deadzone"
 					androidemu:maxValue="4"
@@ -80,7 +80,7 @@
 						android:title="@string/point_size_press"
 						android:summary="@string/point_size_press_summary"/>
 
-				<com.androidemu.SeekBarPreference
+				<com.androidemu.persistent.SeekBarPreference
 						android:key="pointSizePressThreshold"
 						android:title="@string/point_size_press_threshold"
 						android:dependency="pointSizePress"
@@ -95,7 +95,7 @@
 						android:entryValues="@array/vkeypad_size_entryvalues"
 						android:defaultValue="medium"/>
 
-				<com.androidemu.SeekBarPreference
+				<com.androidemu.persistent.SeekBarPreference
 						android:key="vkeypadTransparency"
 						android:title="@string/vkeypad_transparency"
 						android:defaultValue="50"
@@ -109,7 +109,7 @@
 					android:entryValues="@array/vkeypad_layout_entryvalues"
 					android:defaultValue="top_bottom"/>
 
-			<com.androidemu.SeekBarPreference
+			<com.androidemu.persistent.SeekBarPreference
 					android:key="layoutMargin"
 					android:title="@string/layout_margin"
 					androidemu:maxValue="5"

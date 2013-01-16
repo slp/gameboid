@@ -11,11 +11,9 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 
-import com.androidemu.CommonPreferences;
-import com.androidemu.GameKeyPreference;
 import com.androidemu.gba.input.Keycodes;
 
-public class GamePreferences extends CommonPreferences implements
+public class GamePreferences extends com.androidemu.persistent.CommonPreferences implements
 		Preference.OnPreferenceChangeListener
 {
 	public static final int[] gameKeys = { Keycodes.GAMEPAD_UP, Keycodes.GAMEPAD_DOWN,
@@ -85,7 +83,7 @@ public class GamePreferences extends CommonPreferences implements
 		int[] defaultKeys = getDefaultKeys(this);
 		for (int i = 0; i < keyPrefKeys.length; i++)
 		{
-			GameKeyPreference pref = new GameKeyPreference(this);
+			com.androidemu.persistent.GameKeyPreference pref = new com.androidemu.persistent.GameKeyPreference(this);
 			pref.setKey(keyPrefKeys[i]);
 			pref.setTitle(keyDisplayNames[i]);
 			pref.setDefaultValue(defaultKeys[i]);
