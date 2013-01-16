@@ -64,17 +64,18 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 	{
 		super.onCreate(savedInstanceState);
 
-		cfg = new UserPrefs(getApplication().getApplicationContext());
+		setContentView(R.layout.main);
+		
+		cfg = new UserPrefs(getApplicationContext());
 		
 		File datadir = getDir("data", MODE_PRIVATE);
 		emulator = Emulator.createInstance(this, datadir);
 		
-		if (emulator == null)
+		if (emulator == null || !loadBIOS(cfg.bios))
 		{
 			finish();
 			return;
 		}
-		setContentView(R.layout.main);
 
 		emulatorView = (EmulatorView) findViewById(R.id.emulator);
 		placeholder = findViewById(R.id.empty);
@@ -110,8 +111,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 		{
 			debug("Last running game: " + currentGame);
 
-			if (loadBIOS(cfg.bios))
-			{
+			
 				String last = currentGame;
 				
 				if (new File(getGameStateFile(last, 0)).exists() && loadROM(last, false))
@@ -120,7 +120,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 				}
 				
 				hidePlaceholder();
-			}
 		}
 	}
 
