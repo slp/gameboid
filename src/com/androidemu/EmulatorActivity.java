@@ -114,7 +114,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 			{
 				String last = currentGame;
 				
-				cfg.setLastRunningGame(null);
 				if (new File(getGameStateFile(last, 0)).exists() && loadROM(last, false))
 				{
 					quickLoad();
@@ -130,6 +129,14 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 		super.initResources();
 		
 		cfg = new UserPrefs(getApplicationContext());
+	}
+	
+	@Override
+	protected void onPause()
+	{
+		cfg.setLastRunningGame(currentGame);
+
+		super.onPause();
 	}
 	
 	@Override
@@ -506,6 +513,8 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 
 	private boolean loadROM(String fname, boolean failPrompt)
 	{
+		cfg.setLastRunningGame(null);
+
 		unloadROM();
 		if (!emulator.loadROM(fname) && failPrompt)
 		{
@@ -513,7 +522,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 			return false;
 		}
 		currentGame = fname;
-		cfg.setLastRunningGame(currentGame);
 		hidePlaceholder();
 
 		return true;
