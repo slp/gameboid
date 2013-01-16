@@ -47,7 +47,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 
 	private static Emulator emulator;
 	private static int resumeRequested;
-	private static Thread emuThread;
 
 	private EmulatorView emulatorView;
 	private View placeholder;
@@ -71,7 +70,9 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener,
 		cfg = new UserPrefs(getApplication().getApplicationContext());
 		
 		File datadir = getDir("data", MODE_PRIVATE);
-		if (!initEmulator(datadir))
+		emulator = Emulator.createInstance(this, datadir);
+		
+		if (emulator == null)
 		{
 			finish();
 			return;
