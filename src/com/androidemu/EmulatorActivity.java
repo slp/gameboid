@@ -236,6 +236,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
 		menu.setGroupVisible(R.id.GAME_MENU, currentGame != null);
+		Wrapper.MenuItem_setShowAsAction(menu.getItem(2), currentGame == null);
 		
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -560,7 +561,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 		String fname = getGameStateFile(currentGame, slot);
 		if (new File(fname).exists()) emulator.loadState(fname);
 	}
-
+	
 	private void quickSave()
 	{
 		saveGameState(0);
