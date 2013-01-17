@@ -10,9 +10,9 @@ public class UserPrefs extends com.androidemu.persistent.UserPrefs
 	public final String lastRunningGame;
 	public final String lastPickedGame;
 	public final boolean autoFrameSkip;
-	public final String maxFrameSkips;
+	public final int maxFrameSkips;
 	public final boolean soundEnabled;
-	public final String soundVolume;
+	public final int soundVolume;
 	public final boolean enableTrackball;
 	public final boolean enableVirtualKeypad;
 	public final Scaling scalingMode;
@@ -40,11 +40,11 @@ public class UserPrefs extends com.androidemu.persistent.UserPrefs
 		
 		autoFrameSkip = prefsData.getBoolean("autoFrameSkip", true);
 		
-		maxFrameSkips = Integer.toString(prefsData.getInt("maxFrameSkips", 2));
+		maxFrameSkips = prefsData.getInt("maxFrameSkips", 2);
 		
 		soundEnabled = prefsData.getBoolean("soundEnabled", res.getBoolean(R.bool.def_soundEnabled));
 		
-		soundVolume = Integer.toString(prefsData.getInt("soundVolume", 50));
+		soundVolume = prefsData.getInt("soundVolume", 50);
 		
 		enableTrackball = prefsData.getBoolean("enableTrackball", res.getBoolean(R.bool.def_hasTrackball));
 		

@@ -47,7 +47,12 @@ public class Emulator
 	
 	public void setOption(String name, boolean value)
 	{
-		setOption(name, value ? "true" : "false");
+		setOption(name, String.valueOf(value));
+	}
+	
+	public void setOption(String name, int value)
+	{
+		setOption(name, Integer.toString(value));
 	}
 	
 	public native void setRenderSurface(EmulatorView surface, int width, int height);
