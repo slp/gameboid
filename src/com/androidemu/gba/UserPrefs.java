@@ -2,6 +2,7 @@ package com.androidemu.gba;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 public class UserPrefs extends com.androidemu.persistent.UserPrefs
 {
@@ -75,5 +76,10 @@ public class UserPrefs extends com.androidemu.persistent.UserPrefs
 		SharedPreferences.Editor editor = prefsData.edit();
 		editor.putString("bios", bios);
 		editor.commit();
+	}
+
+	public void setHandler(OnSharedPreferenceChangeListener listener)
+	{
+		prefsData.registerOnSharedPreferenceChangeListener(listener);
 	}
 }

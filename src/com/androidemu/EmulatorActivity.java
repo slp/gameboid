@@ -8,6 +8,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -31,7 +33,7 @@ import com.androidemu.gba.input.Trackball;
 
 import com.androidemu.wrapper.Wrapper;
 
-public class EmulatorActivity extends GameActivity implements GameKeyListener
+public class EmulatorActivity extends GameActivity implements GameKeyListener, OnSharedPreferenceChangeListener
 {
 	private static final int REQUEST_BROWSE_ROM = 1;
 	private static final int REQUEST_BROWSE_BIOS = 2;
@@ -67,6 +69,8 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 		setContentView(R.layout.main);
 		
 		cfg = new UserPrefs(getApplicationContext());
+		
+		cfg.setHandler(this);
 		
 		File datadir = getDir("data", MODE_PRIVATE);
 		emulator = Emulator.createInstance(this, datadir);
@@ -300,10 +304,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 			case REQUEST_BROWSE_BIOS:
 				loadBIOS(result == RESULT_OK ? data.getData().getPath() : null);
 				break;
-
-			case REQUEST_SETTINGS:
-				loadGlobalSettings();
-				break;
 		}
 	}
 
@@ -356,6 +356,8 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 
 	private void loadGlobalSettings()
 	{
+		debug("reloading settings");
+		
 		emulator.setOption("autoFrameSkip", cfg.autoFrameSkip);
 		emulator.setOption("maxFrameSkips", cfg.maxFrameSkips);
 		
@@ -574,5 +576,13 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 		if (i >= 0) name = name.substring(0, i);
 		name += ".ss" + slot;
 		return name;
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+	{
+		cfg = new UserPrefs(getApplicationContext());
+
+		loadGlobalSettings();
 	}
 }
