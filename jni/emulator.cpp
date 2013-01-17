@@ -391,7 +391,7 @@ int register_Emulator(JNIEnv *env)
 		{ "unloadROM", "()V", (void *) Emulator_unloadROM },
 		{ "pause", "()V", (void *) Emulator_pause },
 		{ "resume", "()V", (void *) Emulator_resume },
-		{ "run", "()V", (void *) Emulator_run },
+		{ "nativeRun", "()V", (void *) Emulator_run },
 		{ "saveState", "(Ljava/lang/String;)Z", (void *) Emulator_saveState },
 		{ "loadState", "(Ljava/lang/String;)Z", (void *) Emulator_loadState },
 	};

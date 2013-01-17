@@ -141,13 +141,9 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener
 	@Override
 	protected void onDestroy()
 	{
+		if (emulator != null) emulator.unloadROM();
+		
 		super.onDestroy();
-
-		if (isFinishing())
-		{
-			emulator.cleanUp();
-			emulator = null;
-		}
 	}
 	
 	@Override

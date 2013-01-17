@@ -38,7 +38,7 @@ public class Emulator
 			{
 				public void run()
 				{
-					emulator.run();
+					nativeRun();
 				}
 			};
 			emuThread.start();
@@ -58,7 +58,7 @@ public class Emulator
 
 	public native boolean initialize(String libdir, String datadir);
 
-	public native void cleanUp();
+	private native void cleanUp();
 
 	public native void reset();
 
@@ -74,7 +74,7 @@ public class Emulator
 
 	public native void resume();
 
-	public native void run();
+	private native void nativeRun();
 
 	public native boolean saveState(String file);
 
