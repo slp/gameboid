@@ -32,6 +32,7 @@
         <item
             android:id="@+id/menu_close"
             android:showAsAction="never"
+            android:orderInCategory="80"
             android:title="@string/close"/>
     </group>
 
