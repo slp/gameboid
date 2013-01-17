@@ -517,6 +517,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 	private boolean loadROM(String fname, boolean failPrompt)
 	{
 		cfg.setLastRunningGame(null);
+		emulatorView.setActualSize(Emulator.VIDEO_W, Emulator.VIDEO_H);
 
 		unloadROM();
 		if (!emulator.loadROM(fname) && failPrompt)
