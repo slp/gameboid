@@ -35,6 +35,9 @@ import com.androidemu.wrapper.Wrapper;
 
 public class EmulatorActivity extends GameActivity implements GameKeyListener, OnSharedPreferenceChangeListener
 {
+	private static final int SLOT_QUICK = 0;
+	private static final int SLOT_PERSIST = 100;
+	
 	private static final int REQUEST_BROWSE_ROM = 1;
 	private static final int REQUEST_BROWSE_BIOS = 2;
 	private static final int REQUEST_SETTINGS = 3;
@@ -67,11 +70,26 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.main);
-		
+
 		cfg = new UserPrefs(getApplicationContext());
-		
+		currentGame = cfg.lastRunningGame;
+		lastPickedGame = cfg.lastPickedGame;
 		cfg.setHandler(this);
 		
+		emulatorView = (EmulatorView) findViewById(R.id.emulator);
+		placeholder = findViewById(R.id.empty);
+		
+		keyboard = new Keyboard(emulatorView, this);
+		trackball = new Trackball(keyboard, this);
+
+		keypad = (VirtualKeypad) findViewById(R.id.keypad);
+		keypad.setGameKeyListener(this);
+
+		if (savedInstanceState != null)
+		{
+			currentGame = savedInstanceState.getString("currentGame");
+		}
+
 		File datadir = getDir("data", MODE_PRIVATE);
 		emulator = Emulator.createInstance(this, datadir);
 		
@@ -80,50 +98,29 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 			finish();
 			return;
 		}
-
-		emulatorView = (EmulatorView) findViewById(R.id.emulator);
-		placeholder = findViewById(R.id.empty);
-
+		
 		emulatorView.setEmulator(emulator);
-
-		// create physical keyboard and trackball
-		keyboard = new Keyboard(emulatorView, this);
-		trackball = new Trackball(keyboard, this);
-
-		keypad = (VirtualKeypad) findViewById(R.id.keypad);
-		keypad.setGameKeyListener(this);
-
-		// copy preset files
+		
 		extractAsset(new File(datadir, "game_config.txt"));
 
-		// load settings
-		lastPickedGame = cfg.lastPickedGame;
 		loadGlobalSettings();
-		
-		currentGame = cfg.lastRunningGame;
 
-		// restore state if any
-		if (savedInstanceState != null)
-		{
-			currentGame = savedInstanceState.getString("currentGame");
-		}
-		
-		// TODO: find way to set view as default for sure 
-		showPlaceholder();
-		
 		if (currentGame != null)
 		{
 			debug("Last running game: " + currentGame);
-
 			
-				String last = currentGame;
-				
-				if (new File(getGameStateFile(last, 0)).exists() && loadROM(last, false))
-				{
-					quickLoad();
-				}
-				
-				hidePlaceholder();
+			String last = currentGame;
+			
+			if (new File(Emulator.getGameStateFile(last, 100)).exists() && loadROM(last, false))
+			{
+				emulator.loadGameState(currentGame, SLOT_PERSIST);
+			}
+
+			hidePlaceholder();
+		}
+		else
+		{
+			showPlaceholder();
 		}
 	}
 
@@ -137,6 +134,10 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 	@Override
 	protected void onPause()
 	{
+		if (currentGame != null)
+		{
+			emulator.saveGameState(currentGame, SLOT_PERSIST);
+		}
 		cfg.setLastRunningGame(currentGame);
 
 		super.onPause();
@@ -201,12 +202,12 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 	{
 		if (keyCode == quickLoadKey)
 		{
-			quickLoad();
+			emulator.loadGameState(currentGame, SLOT_QUICK);
 			return true;
 		}
 		else if (keyCode == quickSaveKey)
 		{
-			quickSave();
+			emulator.saveGameState(currentGame, SLOT_QUICK);
 			return true;
 		}
 		else
@@ -221,15 +222,17 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 		{
 			showDialog(DIALOG_EXIT_PROMPT);
 		}
+		else
+		{
+			super.onBackPressed();
+		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		super.onCreateOptionsMenu(menu);
-
 		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
@@ -403,7 +406,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 		{
 			public void onClick(DialogInterface dialog, int which)
 			{
-				loadGameState(which);
+				emulator.loadGameState(currentGame, which);
 			}
 		};
 
@@ -419,7 +422,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 		{
 			public void onClick(DialogInterface dialog, int which)
 			{
-				saveGameState(which);
+				emulator.saveGameState(currentGame, which);
 			}
 		};
 
@@ -444,7 +447,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 						onLoadROM();
 						break;
 					case 2:
-						quickSave();
+						emulator.saveGameState(currentGame, SLOT_QUICK);
 						// fall through
 					case 3:
 						finish();
@@ -547,35 +550,5 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 		intent.putExtra(FileChooser.EXTRA_FILTERS,
 				new String[] { ".gba", ".bin", ".zip" });
 		startActivityForResult(intent, REQUEST_BROWSE_ROM);
-	}
-
-	private void saveGameState(int slot)
-	{
-		String fname = getGameStateFile(currentGame, slot);
-		emulator.saveState(fname);
-	}
-
-	private void loadGameState(int slot)
-	{
-		String fname = getGameStateFile(currentGame, slot);
-		if (new File(fname).exists()) emulator.loadState(fname);
-	}
-	
-	private void quickSave()
-	{
-		saveGameState(0);
-	}
-
-	private void quickLoad()
-	{
-		loadGameState(0);
-	}
-
-	private static String getGameStateFile(String name, int slot)
-	{
-		int i = name.lastIndexOf('.');
-		if (i >= 0) name = name.substring(0, i);
-		name += ".ss" + slot;
-		return name;
 	}
 }

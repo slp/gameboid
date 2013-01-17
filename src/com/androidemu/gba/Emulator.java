@@ -1,6 +1,7 @@
 package com.androidemu.gba;
 
 import java.io.File;
+import java.io.IOException;
 
 import android.content.Context;
 
@@ -55,6 +56,26 @@ public class Emulator
 		setOption(name, Integer.toString(value));
 	}
 	
+	public void saveGameState(String currentGame, int slot)
+	{
+		String fname = getGameStateFile(currentGame, slot);
+		saveState(fname);
+	}
+
+	public void loadGameState(String currentGame, int slot)
+	{
+		String fname = getGameStateFile(currentGame, slot);
+		if (new File(fname).exists()) loadState(fname);
+	}
+
+	public static String getGameStateFile(String name, int slot)
+	{
+		int i = name.lastIndexOf('.');
+		if (i >= 0) name = name.substring(0, i);
+		name += ".ss" + slot;
+		return name;
+	}
+	
 	public native void setRenderSurface(EmulatorView surface, int width, int height);
 
 	public native void setKeyStates(int states);
@@ -79,7 +100,7 @@ public class Emulator
 
 	public native void resume();
 
-	private native void nativeRun();
+	protected native void nativeRun();
 
 	public native boolean saveState(String file);
 
