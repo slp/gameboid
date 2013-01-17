@@ -132,6 +132,18 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 	}
 	
 	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		
+		if (Wrapper.SDK_INT < 11 && !cfg.hintShown_fullScreen
+				&& cfg.keysMap[KeyEvent.KEYCODE_BACK] != 0)
+		{
+			showDialog(DIALOG_FULLSCREEN_HINT);
+		}
+	}
+	
+	@Override
 	protected void onPause()
 	{
 		if (currentGame != null)
