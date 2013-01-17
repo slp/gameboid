@@ -346,12 +346,13 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 
 		emulator.pause();
 	}
-
-	private static int getScalingMode(String mode)
+	
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
 	{
-		if (mode.equals("original")) return EmulatorView.SCALING_ORIGINAL;
-		if (mode.equals("proportional")) return EmulatorView.SCALING_PROPORTIONAL;
-		return EmulatorView.SCALING_STRETCH;
+		cfg = new UserPrefs(getApplicationContext());
+
+		loadGlobalSettings();
 	}
 
 	private void loadGlobalSettings()
@@ -368,7 +369,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 		
 		keypad.setVisibility(cfg.enableVirtualKeypad ? View.VISIBLE : View.GONE);
 
-		emulatorView.setScalingMode(getScalingMode(cfg.scalingMode));
+		emulatorView.setScalingMode(cfg.scalingMode);
 
 		// key bindings
 		final int[] gameKeys = GamePreferences.gameKeys;
@@ -576,13 +577,5 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 		if (i >= 0) name = name.substring(0, i);
 		name += ".ss" + slot;
 		return name;
-	}
-
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
-	{
-		cfg = new UserPrefs(getApplicationContext());
-
-		loadGlobalSettings();
 	}
 }

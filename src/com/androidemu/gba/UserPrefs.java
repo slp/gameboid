@@ -15,10 +15,18 @@ public class UserPrefs extends com.androidemu.persistent.UserPrefs
 	public final String soundVolume;
 	public final boolean enableTrackball;
 	public final boolean enableVirtualKeypad;
-	public final String scalingMode;
+	public final Scaling scalingMode;
 	public final int quickLoad;
 	public final int quickSave;
 	public int[] keysMap = new int[128];
+	
+	public enum Scaling
+	{
+		original,
+		proportional,
+		stretch,
+		x2
+	}
 	
 	public UserPrefs(Context context)
 	{
@@ -42,7 +50,7 @@ public class UserPrefs extends com.androidemu.persistent.UserPrefs
 		
 		enableVirtualKeypad = prefsData.getBoolean("enableVirtualKeypad", res.getBoolean(R.bool.def_useTouch));
 		
-		scalingMode = prefsData.getString("scalingMode", res.getString(R.string.def_scalingMode));
+		scalingMode = Scaling.valueOf(prefsData.getString("scalingMode", res.getString(R.string.def_scalingMode)));
 		
 		quickLoad = prefsData.getInt("quickLoad", 0);
 		

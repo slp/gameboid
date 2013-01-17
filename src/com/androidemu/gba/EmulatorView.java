@@ -1,5 +1,7 @@
 package com.androidemu.gba;
 
+import com.androidemu.gba.UserPrefs.Scaling;
+
 import android.content.Context;
 
 import android.graphics.Canvas;
@@ -10,6 +12,7 @@ import android.util.Log;
 
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.ImageView.ScaleType;
 
 public class EmulatorView extends SurfaceView implements SurfaceHolder.Callback
 {
@@ -19,7 +22,7 @@ public class EmulatorView extends SurfaceView implements SurfaceHolder.Callback
 	public static final int SCALING_2X = 3;
 
 	private Emulator emulator;
-	private int scalingMode = SCALING_STRETCH;
+	private Scaling scalingMode = Scaling.proportional;
 	
 	private int actualWidth;
 	private int actualHeight;
@@ -44,7 +47,7 @@ public class EmulatorView extends SurfaceView implements SurfaceHolder.Callback
 		emulator = e;
 	}
 
-	public void setScalingMode(int mode)
+	public void setScalingMode(Scaling mode)
 	{
 		if (scalingMode != mode)
 		{
@@ -111,7 +114,7 @@ public class EmulatorView extends SurfaceView implements SurfaceHolder.Callback
 		int w = 0;
 		int h = 0;
 
-		if (scalingMode != SCALING_STRETCH && aspectRatio != 0)
+		if (scalingMode != Scaling.stretch && aspectRatio != 0)
 		{
 			float ratio = aspectRatio * actualHeight / actualWidth;
 			viewWidth = (int) (viewWidth / ratio);
@@ -119,17 +122,17 @@ public class EmulatorView extends SurfaceView implements SurfaceHolder.Callback
 
 		switch (scalingMode)
 		{
-			case SCALING_ORIGINAL:
+			case original:
 				w = viewWidth;
 				h = viewHeight;
 				break;
 
-			case SCALING_2X:
+			case x2:
 				w = viewWidth / 2;
 				h = viewHeight / 2;
 				break;
 
-			case SCALING_STRETCH:
+			case stretch:
 				if (viewWidth * actualHeight >= viewHeight * actualWidth)
 				{
 					w = actualWidth;
