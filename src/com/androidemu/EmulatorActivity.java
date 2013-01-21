@@ -104,10 +104,8 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 				
 		loadGlobalSettings();
 		
-		
 		loadBIOS(cfg.bios);
 		
-		cfg.setHandler(this);
 		/*
 		if (savedInstanceState != null)
 		{
@@ -134,10 +132,8 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 	@Override
 	protected boolean isMenuAccessible()
 	{
-		return cfg.hintShown_fullScreen ||
-				(Wrapper.isHwMenuBtnAvailable(this)
-				? cfg.keysMap[KeyEvent.KEYCODE_MENU] == 0 :
-					!cfg.fullScreen);
+		return cfg.hintShown_fullScreen || (Wrapper.isHwMenuBtnAvailable(this)
+				? keyboard.keysMap[KeyEvent.KEYCODE_MENU] == 0 : !cfg.fullScreen);
 	}
 
 	protected void initResources()
@@ -145,6 +141,7 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 		super.initResources();
 		
 		cfg = new UserPrefs(getApplicationContext());
+		cfg.setHandler(this);
 	}
 	
 	@Override

@@ -8,7 +8,7 @@ public class Keyboard implements View.OnKeyListener {
 
 	private GameKeyListener gameKeyListener;
 	private View.OnKeyListener keyListener;
-	private int[] keysMap = new int[128];
+	public int[] keysMap = new int[128];
 	private int keyStates;
 
 	public Keyboard(View view, GameKeyListener listener) {
