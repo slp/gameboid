@@ -67,61 +67,77 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		// XXX: redo all of this, it does too many things at once:
+		// 1) initializing native emulator peer
+		// 2) Initializing multiple input handling classes (should be in separate class?)
+		// 3) loading BIOS
+		// 4) restoring saved state
+		
+		// safe to call, contains only window beautifying stuff
 		super.onCreate(savedInstanceState);
-
+		
+		// TODO: move this section to more suitable place (perhaps Application object?)
+		File datadir = getDir("data", MODE_PRIVATE);
+		emulator = Emulator.createInstance(this, datadir);
+		if (emulator == null)
+		{
+			throw new RuntimeException("Core initialization failed");
+		}
+		
 		setContentView(R.layout.main);
-
-		cfg = new UserPrefs(getApplicationContext());
+		
 		currentGame = cfg.lastRunningGame;
 		lastPickedGame = cfg.lastPickedGame;
-		cfg.setHandler(this);
+
+		placeholder = findViewById(R.id.empty);
 		
 		emulatorView = (EmulatorView) findViewById(R.id.emulator);
-		placeholder = findViewById(R.id.empty);
+		emulatorView.setEmulator(emulator);
 		
 		keyboard = new Keyboard(emulatorView, this);
 		trackball = new Trackball(keyboard, this);
-
+		
 		keypad = (VirtualKeypad) findViewById(R.id.keypad);
 		keypad.setGameKeyListener(this);
-
+		
+		extractAsset(new File(datadir, "game_config.txt"));
+				
+		loadGlobalSettings();
+		
+		
+		loadBIOS(cfg.bios);
+		
+		cfg.setHandler(this);
+		/*
 		if (savedInstanceState != null)
 		{
 			currentGame = savedInstanceState.getString("currentGame");
 		}
 
-		File datadir = getDir("data", MODE_PRIVATE);
-		emulator = Emulator.createInstance(this, datadir);
-		
-		if (emulator == null || !loadBIOS(cfg.bios))
-		{
-			finish();
-			return;
-		}
-		
-		emulatorView.setEmulator(emulator);
-		
-		extractAsset(new File(datadir, "game_config.txt"));
-
-		loadGlobalSettings();
-
 		if (currentGame != null)
 		{
 			debug("Last running game: " + currentGame);
-			
 			String last = currentGame;
-			
-			if (new File(Emulator.getGameStateFile(last, 100)).exists() && loadROM(last, false))
+			if (new File(Emulator.getGameStateFile(last, 100)).exists()
+					&& loadROM(last, false))
 			{
 				emulator.loadGameState(currentGame, SLOT_PERSIST);
 			}
-
 			hidePlaceholder();
 		}
 		else
-		{
+		{*/
 			showPlaceholder();
-		}
+		//}
+	}
+	
+	@Override
+	protected boolean isMenuAccessible()
+	{
+		return cfg.hintShown_fullScreen ||
+				(Wrapper.isHwMenuBtnAvailable(this)
+				? cfg.keysMap[KeyEvent.KEYCODE_MENU] == 0 :
+					!cfg.fullScreen);
 	}
 
 	protected void initResources()
@@ -129,18 +145,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 		super.initResources();
 		
 		cfg = new UserPrefs(getApplicationContext());
-	}
-	
-	@Override
-	protected void onStart()
-	{
-		super.onStart();
-		
-		if (Wrapper.SDK_INT < 11 && !cfg.hintShown_fullScreen
-				&& cfg.keysMap[KeyEvent.KEYCODE_BACK] != 0)
-		{
-			showDialog(DIALOG_FULLSCREEN_HINT);
-		}
 	}
 	
 	@Override
@@ -203,6 +207,10 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 				uiHider.show();
 			}
 			return true;
+		}
+		else if (Wrapper.SDK_INT > 11 && event.getKeyCode() == KeyEvent.KEYCODE_MENU)
+		{
+			uiHider.show();
 		}
 		
 		return keyboard.onKey(null, event.getKeyCode(), event) || super.dispatchKeyEvent(event);
@@ -484,12 +492,12 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 		startActivityForResult(intent, REQUEST_BROWSE_BIOS);
 	}
 
-	private boolean loadBIOS(String name)
+	private void loadBIOS(String name)
 	{
 		if (name != null && emulator.loadBIOS(name))
 		{
 			cfg.setBIOS(name);
-			return true;
+			return;
 		}
 
 		final String biosFileName = name;
@@ -517,8 +525,6 @@ public class EmulatorActivity extends GameActivity implements GameKeyListener, O
 								: R.string.load_bios_failed)
 				.setPositiveButton(R.string.browse_bios, l)
 				.setNegativeButton(R.string.quit, l).show();
-
-		return false;
 	}
 
 	private boolean loadROM(String fname)
