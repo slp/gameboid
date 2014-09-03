@@ -26,4 +26,11 @@
 		<item>stretch</item>
 	</string-array>
 
+	<string-array name="exit_game_options">
+	    <item>Return to game</item>
+	    <item>Load another ROM</item>
+	    <item>Save and exit</item>
+	    <item>Exit without saving</item>
+	</string-array>
+
 </resources>

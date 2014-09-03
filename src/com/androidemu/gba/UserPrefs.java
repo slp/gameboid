@@ -46,7 +46,8 @@ public class UserPrefs extends com.androidemu.persistent.UserPrefs
 		
 		soundVolume = prefsData.getInt("soundVolume", 50);
 		
-		enableTrackball = prefsData.getBoolean("enableTrackball", res.getBoolean(R.bool.def_hasTrackball));
+		//enableTrackball = prefsData.getBoolean("enableTrackball", res.getBoolean(R.bool.def_hasTrackball));
+		enableTrackball = false;
 		
 		enableVirtualKeypad = prefsData.getBoolean("enableVirtualKeypad", res.getBoolean(R.bool.def_useTouch));
 		

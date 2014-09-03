@@ -122,11 +122,11 @@
 					android:defaultValue="2"/>
 		</PreferenceScreen>
 
-		<CheckBoxPreference android:key="enableTrackball"
-				android:title="@string/enable_trackball"
-				android:summary="@string/enable_trackball_summary"
-				android:enabled="@bool/def_hasTrackball"
-				android:selectable="@bool/def_hasTrackball"/>
+<!-- 		<CheckBoxPreference android:key="enableTrackball" -->
+<!-- 				android:title="@string/enable_trackball" -->
+<!-- 				android:summary="@string/enable_trackball_summary" -->
+<!-- 				android:enabled="@bool/def_hasTrackball" -->
+<!-- 				android:selectable="@bool/def_hasTrackball"/> -->
 	</PreferenceCategory>
 
 </PreferenceScreen>

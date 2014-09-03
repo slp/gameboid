@@ -70,4 +70,22 @@
 	<string name="gamepad_TL">Trigger Left</string>
 	<string name="gamepad_TR">Trigger Right</string>
 
+	<string name="no_rom">No ROM</string>
+	<string name="sound_volume">Sound Volume</string>
+	<string name="vkeypad_settings">VKeyPad Settings</string>
+	<string name="vkeypad_settings_summary">VKeyPad Settings Summary</string>
+	<string name="enable_vibrator">Enable vibrator</string>
+	<string name="dpad_4way">DPAD 4-way</string>
+	<string name="dpad_deadzone">DPAD Deadzone</string>
+	<string name="two_buttons_press">Two buttons press</string>
+	<string name="in_between_press">In-between press</string>
+	<string name="in_between_press_summary">In-between press summary</string>
+	<string name="point_size_press">Point size press</string>
+	<string name="point_size_press_summary">Point size press summary</string>
+	<string name="point_size_press_threshold">Point size press threshold</string>
+	<string name="appearance">Appearance</string>
+	<string name="vkeypad_size">VKeyPad size</string>
+	<string name="vkeypad_transparency">VKeyPad transparency</string>
+	<string name="vkeypad_layout">VKeyPad layout</string>
+	<string name="layout_margin">Layout margin</string>
 </resources>

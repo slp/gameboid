@@ -2837,7 +2837,7 @@ u8 function_cc *block_lookup_address_##type(u32 pc)                           \
         char buffer[256];                                                     \
         sprintf(buffer, "bad jump %x (%x) (%x)\n", pc, reg[REG_PC],           \
          last_instruction);                                                   \
-        printf(buffer);                                                       \
+        printf("%s", buffer);                                                 \
         quit();                                                               \
       }                                                                       \
       block_address = (u8 *)(-1);                                             \

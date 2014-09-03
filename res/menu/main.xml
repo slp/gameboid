@@ -23,6 +23,12 @@
         android:showAsAction="ifRoom|withText"
         android:title="@string/open"/>
 
+<!--     <item -->
+<!--         android:id="@+id/menu_settings" -->
+<!--         android:alphabeticShortcut="s" -->
+<!--         android:showAsAction="ifRoom|withText" -->
+<!--         android:title="@string/settings"/> -->
+
     <group android:id="@+id/GAME_MENU" >
         <item
             android:id="@+id/menu_reset"
